@@ -68,7 +68,7 @@ export async function sendBeemSms({
   }
 
   const apiKey = process.env.BEEM_API_KEY;
-  const secretKey = process.env.BEEM_SECRET_KEY;
+  const secretKey = process.env.BEEM_SECRET_KEY || process.env.BEEM_API_SECRET;
   const senderId = process.env.BEEM_SENDER_ID || "INFO";
 
   const beemRecipients = validRecipients.map((phone, index) => ({
