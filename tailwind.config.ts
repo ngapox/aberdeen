@@ -10,28 +10,29 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Matched to @aberdeen_daycare_nursery brand palette (Sky Cerulean + Deep Teal + Golden Marigold)
         aberdeen: {
-          50: "#f2f8f5",
-          100: "#dfefe6",
-          200: "#c1dfd0",
-          300: "#95c7b0",
-          400: "#65a98c",
-          500: "#428c6f",
-          600: "#307057",
-          700: "#285a47",
-          800: "#22483a",
-          900: "#1d3b30",
-          950: "#0f211b",
+          50: "#f2f7fa",
+          100: "#e2eef5",
+          200: "#c6dfed",
+          300: "#9bc6de",
+          400: "#7aa7c2", // Signature poster sky-blue background
+          500: "#548eb0",
+          600: "#3b7a9e", // Signature poster quote-bubble teal-blue
+          700: "#2f6280",
+          800: "#275169",
+          900: "#1e3f52",
+          950: "#132936",
         },
-        amberwarm: {
+        marigold: {
           50: "#fffbeb",
           100: "#fef3c7",
-          200: "#fde68a",
-          300: "#fcd34d",
-          400: "#fbbf24",
-          500: "#f59e0b",
-          600: "#d97706",
-          700: "#b45309",
+          200: "#fde58a",
+          300: "#fbd24d",
+          400: "#f7b81b",
+          500: "#e59500", // Signature poster golden marigold brush-stroke
+          600: "#c97d00",
+          700: "#a36102",
         },
       },
       fontFamily: {

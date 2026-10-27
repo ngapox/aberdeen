@@ -20,7 +20,7 @@ export default function PortalLoginPage() {
   const router = useRouter();
   const { profiles, loginByPhone, switchUserById } = usePortal();
 
-  const [phoneNumber, setPhoneNumber] = useState("+255754100100");
+  const [phoneNumber, setPhoneNumber] = useState("+255716004601");
   const [password, setPassword] = useState("Aberdeen2026!");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);

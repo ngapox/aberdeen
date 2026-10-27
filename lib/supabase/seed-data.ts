@@ -92,8 +92,8 @@ export const STEP_META: Record<
 export const INITIAL_PROFILES: Profile[] = [
   {
     id: "usr-owner-1",
-    phone_number: "+255754100100",
-    full_name: "Dr. Neema Mwakasege",
+    phone_number: "+255716004601",
+    full_name: "Madam Elizabeth Nkya",
     role: "owner",
     created_at: "2026-01-05T08:00:00Z",
   },
@@ -457,7 +457,7 @@ export const INITIAL_FORUM_POSTS: ForumPost[] = [
     class_id: null,
     class_key: null,
     author_id: "usr-owner-1",
-    author_name: "Dr. Neema Mwakasege",
+    author_name: "Madam Elizabeth Nkya",
     author_role: "owner",
     title: "Term II Parents & Teachers Fellowship Day – Friday, 13th November",
     content:
