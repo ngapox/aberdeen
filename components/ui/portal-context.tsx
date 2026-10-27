@@ -72,7 +72,13 @@ interface PortalContextValue {
     fullName: string;
     pupilName?: string;
     stepClass?: StepClassKey;
+    tempPassword?: string;
+    sendWelcomeSms?: boolean;
   }) => Promise<{ ok: boolean; error?: string }>;
+
+  deleteProfile: (profileId: string) => void;
+  deletePupil: (pupilId: string) => void;
+  updatePupilStep: (pupilId: string, newStep: StepClassKey) => void;
 
   createInvoice: (input: {
     pupilId: string;
@@ -81,10 +87,8 @@ interface PortalContextValue {
     sendSms: boolean;
   }) => Promise<{ ok: boolean; invoiceNo?: string; error?: string }>;
 
-  recordInvoicePayment: (
-    invoiceId: string,
-    additionalPaid: number
-  ) => void;
+  recordInvoicePayment: (invoiceId: string, additionalPaid: number) => void;
+  deleteInvoice: (invoiceId: string) => void;
 
   sendInvoiceAlertAndSms: (invoiceId: string) => Promise<{
     ok: boolean;
@@ -137,6 +141,8 @@ interface PortalContextValue {
   deleteForumPost: (postId: string) => void;
 }
 
+const STORAGE_KEY = "aberdeen_portal_clean_v1";
+
 const PortalContext = createContext<PortalContextValue | undefined>(undefined);
 
 export function PortalProvider({ children }: { children: React.ReactNode }) {
@@ -159,27 +165,92 @@ export function PortalProvider({ children }: { children: React.ReactNode }) {
   const [notifications, setNotifications] = useState<AppNotification[]>(
     INITIAL_NOTIFICATIONS
   );
-  const [smsLogs, setSmsLogs] = useState<SmsDispatchLog[]>([
-    {
-      id: "sms-init-1",
-      sentAt: "2026-10-26T10:02:00Z",
-      senderName: "Bi. Salma Kikwete",
-      senderRole: "secretary",
-      recipients: ["+255754400402"],
-      message:
-        "Habari Bi. Halima Nyerere, ankara mpya ya ada ya shule (ABD-2026-103) kwa Zuri Halima Nyerere imetolewa. Kiasi: TZS 720,000. Tarehe ya mwisho: 2026-11-10. Asante - Aberdeen Daycare & Nursery School.",
-      templateType: "invoice",
-      simulated: true,
-    },
-  ]);
+  const [smsLogs, setSmsLogs] = useState<SmsDispatchLog[]>([]);
+  const [hydrated, setHydrated] = useState(false);
 
-  // Persist currentUserId in sessionStorage so navigation keeps role
+  // Hydrate persisted state from localStorage so real records created by Madam Elizabeth stay saved
   useEffect(() => {
-    const saved = sessionStorage.getItem("aberdeen_active_user_id");
-    if (saved && profiles.some((p) => p.id === saved)) {
-      setCurrentUserId(saved);
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed.profiles) && parsed.profiles.length > 0) {
+          setProfiles(parsed.profiles);
+        }
+        if (Array.isArray(parsed.teacherAssignments)) {
+          setTeacherAssignments(parsed.teacherAssignments);
+        }
+        if (Array.isArray(parsed.pupils)) {
+          setPupils(parsed.pupils);
+        }
+        if (Array.isArray(parsed.invoices)) {
+          setInvoices(parsed.invoices);
+        }
+        if (Array.isArray(parsed.diaries)) {
+          setDiaries(parsed.diaries);
+        }
+        if (Array.isArray(parsed.diaryComments)) {
+          setDiaryComments(parsed.diaryComments);
+        }
+        if (Array.isArray(parsed.weeklyReports)) {
+          setWeeklyReports(parsed.weeklyReports);
+        }
+        if (Array.isArray(parsed.forumPosts)) {
+          setForumPosts(parsed.forumPosts);
+        }
+        if (Array.isArray(parsed.notifications)) {
+          setNotifications(parsed.notifications);
+        }
+        if (Array.isArray(parsed.smsLogs)) {
+          setSmsLogs(parsed.smsLogs);
+        }
+      }
+      const savedUser = sessionStorage.getItem("aberdeen_active_user_id");
+      if (savedUser) {
+        setCurrentUserId(savedUser);
+      }
+    } catch {
+      // Ignore storage errors
+    } finally {
+      setHydrated(true);
     }
-  }, [profiles]);
+  }, []);
+
+  // Save state whenever records change
+  useEffect(() => {
+    if (!hydrated) return;
+    try {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({
+          profiles,
+          teacherAssignments,
+          pupils,
+          invoices,
+          diaries,
+          diaryComments,
+          weeklyReports,
+          forumPosts,
+          notifications,
+          smsLogs,
+        })
+      );
+    } catch {
+      // Ignore storage quota errors
+    }
+  }, [
+    hydrated,
+    profiles,
+    teacherAssignments,
+    pupils,
+    invoices,
+    diaries,
+    diaryComments,
+    weeklyReports,
+    forumPosts,
+    notifications,
+    smsLogs,
+  ]);
 
   const currentUser =
     profiles.find((p) => p.id === currentUserId) || profiles[0];
@@ -198,14 +269,13 @@ export function PortalProvider({ children }: { children: React.ReactNode }) {
       return {
         ok: false,
         error:
-          "Account not found for this +255 number. Accounts must be provisioned by the Admin, Owner, or Secretary.",
+          "No account found for this +255 phone number. Accounts must be registered by Madam Elizabeth Nkya (Owner), Admin, or Secretary.",
       };
     }
     switchUserById(matched.id);
     return { ok: true };
   };
 
-  // Teacher's assigned Step class
   const assignedTeacherStep: StepClassKey | null = React.useMemo(() => {
     if (currentUser.role !== "teacher") return null;
     const assignment = teacherAssignments.find(
@@ -216,7 +286,6 @@ export function PortalProvider({ children }: { children: React.ReactNode }) {
     return cls ? cls.name : "step_1";
   }, [currentUser, teacherAssignments]);
 
-  // Parent's enrolled children
   const parentPupils: Pupil[] = React.useMemo(() => {
     if (currentUser.role !== "parent") return [];
     return pupils.filter(
@@ -224,7 +293,6 @@ export function PortalProvider({ children }: { children: React.ReactNode }) {
     );
   }, [currentUser, pupils]);
 
-  // Current user's notifications
   const userNotifications = React.useMemo(() => {
     return notifications
       .filter((n) => n.recipient_id === currentUser.id)
@@ -258,6 +326,8 @@ export function PortalProvider({ children }: { children: React.ReactNode }) {
     fullName: string;
     pupilName?: string;
     stepClass?: StepClassKey;
+    tempPassword?: string;
+    sendWelcomeSms?: boolean;
   }) => {
     const cleanPhone = input.phoneNumber.trim();
     if (!/^\+255\d{9}$/.test(cleanPhone)) {
@@ -267,7 +337,6 @@ export function PortalProvider({ children }: { children: React.ReactNode }) {
       };
     }
 
-    // Call API endpoint for server-side validation / Supabase Admin provisioning
     const res = await fetch("/api/accounts/provision", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -278,6 +347,7 @@ export function PortalProvider({ children }: { children: React.ReactNode }) {
         fullName: input.fullName.trim(),
         pupilName: input.pupilName?.trim(),
         assignedClass: input.stepClass,
+        tempPassword: input.tempPassword || "Aberdeen2026!",
       }),
     });
 
@@ -286,9 +356,9 @@ export function PortalProvider({ children }: { children: React.ReactNode }) {
       return { ok: false, error: data.error || "Failed to provision account" };
     }
 
-    // Check if profile with phone already exists (e.g., parent enrolling a 2nd child)
     let targetProfile = profiles.find((p) => p.phone_number === cleanPhone);
-    const newUserId = targetProfile ? targetProfile.id : `usr-${Date.now()}`;
+    const newUserId =
+      data.userId || (targetProfile ? targetProfile.id : `usr-${Date.now()}`);
 
     if (!targetProfile) {
       targetProfile = {
@@ -298,7 +368,7 @@ export function PortalProvider({ children }: { children: React.ReactNode }) {
         role: input.role,
         created_at: new Date().toISOString(),
       };
-      setProfiles((prev) => [targetProfile!, ...prev]);
+      setProfiles((prev) => [...prev, targetProfile!]);
     }
 
     if (input.role === "teacher" && input.stepClass) {
@@ -328,13 +398,12 @@ export function PortalProvider({ children }: { children: React.ReactNode }) {
       };
       setPupils((prev) => [newPupil, ...prev]);
 
-      // Notify parent account
       setNotifications((prev) => [
         {
           id: `notif-${Date.now()}`,
           recipient_id: newUserId,
           title: `Welcome to Aberdeen • ${newPupil.pupil_name}`,
-          message: `${newPupil.pupil_name} has been enrolled in ${cls.display_name}.`,
+          message: `${newPupil.pupil_name} is enrolled in ${cls.display_name}. Step by Step, the child is prospering!`,
           is_read: false,
           created_at: new Date().toISOString(),
         },
@@ -342,7 +411,71 @@ export function PortalProvider({ children }: { children: React.ReactNode }) {
       ]);
     }
 
+    // Optional Welcome SMS via Beem Africa
+    if (input.sendWelcomeSms) {
+      const welcomeMsg =
+        input.role === "parent"
+          ? `Karibu Aberdeen Daycare & Nursery, ${input.fullName.trim()}! Akaunti ya ${input.pupilName?.trim()} imefunguliwa. Namba ya kuingia: ${cleanPhone}. Asante - Madam Elizabeth Nkya.`
+          : `Karibu Aberdeen Daycare & Nursery, ${input.fullName.trim()}! Akaunti yako ya (${input.role.toUpperCase()}) imefunguliwa kwa namba ${cleanPhone}.`;
+
+      const smsRes = await fetch("/api/sms/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          role: currentUser.role,
+          templateType: "custom",
+          recipients: [cleanPhone],
+          customMessage: welcomeMsg,
+        }),
+      });
+      const smsData = await smsRes.json();
+      if (smsRes.ok && smsData.messageDispatched) {
+        setSmsLogs((prev) => [
+          {
+            id: `sms-${Date.now()}`,
+            sentAt: new Date().toISOString(),
+            senderName: currentUser.full_name,
+            senderRole: currentUser.role,
+            recipients: [cleanPhone],
+            message: smsData.messageDispatched,
+            templateType: "custom",
+            simulated: Boolean(smsData.simulated),
+          },
+          ...prev,
+        ]);
+      }
+    }
+
     return { ok: true };
+  };
+
+  const deleteProfile = (profileId: string) => {
+    if (profileId === "usr-owner-1") return; // Protect primary Owner account
+    setProfiles((prev) => prev.filter((p) => p.id !== profileId));
+    setTeacherAssignments((prev) =>
+      prev.filter((ta) => ta.teacher_id !== profileId)
+    );
+    setPupils((prev) => prev.filter((p) => p.parent_id !== profileId));
+    if (currentUserId === profileId) {
+      setCurrentUserId("usr-owner-1");
+    }
+  };
+
+  const deletePupil = (pupilId: string) => {
+    setPupils((prev) => prev.filter((p) => p.id !== pupilId));
+    setInvoices((prev) => prev.filter((i) => i.pupil_id !== pupilId));
+    setDiaries((prev) => prev.filter((d) => d.pupil_id !== pupilId));
+    setWeeklyReports((prev) => prev.filter((r) => r.pupil_id !== pupilId));
+  };
+
+  const updatePupilStep = (pupilId: string, newStep: StepClassKey) => {
+    const cls = SCHOOL_CLASSES.find((c) => c.name === newStep);
+    if (!cls) return;
+    setPupils((prev) =>
+      prev.map((p) =>
+        p.id === pupilId ? { ...p, class_id: cls.id, class_key: newStep } : p
+      )
+    );
   };
 
   const createInvoice = async (input: {
@@ -352,9 +485,11 @@ export function PortalProvider({ children }: { children: React.ReactNode }) {
     sendSms: boolean;
   }) => {
     const pupil = pupils.find((p) => p.id === input.pupilId);
-    if (!pupil) return { ok: false, error: "Pupil not found" };
+    if (!pupil) return { ok: false, error: "Please select an enrolled pupil first." };
 
-    const invoiceNo = `ABD-2026-${Math.floor(110 + invoices.length + Math.random() * 80)}`;
+    const invoiceNo = `ABD-${new Date().getFullYear()}-${String(
+      invoices.length + 101
+    ).padStart(3, "0")}`;
     const newInvoice: Invoice = {
       id: `inv-${Date.now()}`,
       invoice_no: invoiceNo,
@@ -373,7 +508,6 @@ export function PortalProvider({ children }: { children: React.ReactNode }) {
 
     setInvoices((prev) => [newInvoice, ...prev]);
 
-    // Always send in-app notification to the parent
     setNotifications((prev) => [
       {
         id: `notif-inv-${Date.now()}`,
@@ -433,7 +567,6 @@ export function PortalProvider({ children }: { children: React.ReactNode }) {
         if (updatedPaid >= inv.amount) status = "paid";
         else if (updatedPaid > 0) status = "partial";
 
-        // Notify parent of recorded payment
         const pupil = pupils.find((p) => p.id === inv.pupil_id);
         if (pupil) {
           setNotifications((nPrev) => [
@@ -456,6 +589,10 @@ export function PortalProvider({ children }: { children: React.ReactNode }) {
         };
       })
     );
+  };
+
+  const deleteInvoice = (invoiceId: string) => {
+    setInvoices((prev) => prev.filter((inv) => inv.id !== invoiceId));
   };
 
   const sendInvoiceAlertAndSms = async (invoiceId: string) => {
@@ -603,7 +740,6 @@ export function PortalProvider({ children }: { children: React.ReactNode }) {
       ];
     });
 
-    // Notify parent
     setNotifications((prev) => [
       {
         id: `notif-dry-${Date.now()}-${pupil.id}`,
@@ -689,12 +825,9 @@ export function PortalProvider({ children }: { children: React.ReactNode }) {
 
     setDiaryComments((prev) => [...prev, newComment]);
 
-    // When a Parent submits a comment, trigger an in-app notification (red badge)
-    // to BOTH the child's Teacher AND the School Owner/Admin
     if (currentUser.role === "parent") {
       const newNotifs: AppNotification[] = [];
 
-      // 1. Child's Teacher
       if (targetDiary.teacher_id) {
         newNotifs.push({
           id: `notif-cmt-tchr-${Date.now()}`,
@@ -706,7 +839,6 @@ export function PortalProvider({ children }: { children: React.ReactNode }) {
         });
       }
 
-      // 2. All School Owner & Admin accounts
       const adminProfiles = profiles.filter(
         (p) => p.role === "owner" || p.role === "admin"
       );
@@ -723,7 +855,6 @@ export function PortalProvider({ children }: { children: React.ReactNode }) {
 
       setNotifications((prev) => [...newNotifs, ...prev]);
     } else {
-      // Teacher or Admin replied -> notify the pupil's Parent
       const pupil = pupils.find((p) => p.id === targetDiary.pupil_id);
       if (pupil) {
         setNotifications((prev) => [
@@ -768,7 +899,6 @@ export function PortalProvider({ children }: { children: React.ReactNode }) {
 
     setWeeklyReports((prev) => [newReport, ...prev]);
 
-    // Notify Parent & Admin/Owner
     const adminProfiles = profiles.filter(
       (p) => p.role === "owner" || p.role === "admin"
     );
@@ -851,8 +981,12 @@ export function PortalProvider({ children }: { children: React.ReactNode }) {
         markNotificationRead,
         markAllNotificationsRead,
         provisionAccount,
+        deleteProfile,
+        deletePupil,
+        updatePupilStep,
         createInvoice,
         recordInvoicePayment,
+        deleteInvoice,
         sendInvoiceAlertAndSms,
         sendBroadcastSms,
         upsertDailyDiary,

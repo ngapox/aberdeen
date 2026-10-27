@@ -110,29 +110,29 @@ export function SqlAndRlsViewer() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-3xl border border-stone-200/90 p-6 sm:p-8 shadow-sm space-y-4">
+      <div className="bg-white rounded-3xl border-2 border-[#c6dfed] p-6 sm:p-8 shadow-sm space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-aberdeen-700">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#3b7a9e]">
               Supabase PostgreSQL &amp; Row Level Security (Free-Tier Optimized)
             </span>
-            <h2 className="font-display text-2xl font-bold text-stone-900">
+            <h2 className="font-display text-2xl font-bold text-[#1e3f52]">
               Database Architecture &amp; Strict RLS Policies
             </h2>
           </div>
           <button
             type="button"
             onClick={handleCopy}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-aberdeen-800 hover:bg-aberdeen-900 text-white text-xs font-bold"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#e59500] hover:bg-[#c97d00] text-white text-xs font-bold shadow-xs"
           >
             {copied ? (
               <>
-                <Check className="w-4 h-4 text-amber-300" />
+                <Check className="w-4 h-4" />
                 <span>Copied SQL Summary</span>
               </>
             ) : (
               <>
-                <Copy className="w-4 h-4 text-amber-300" />
+                <Copy className="w-4 h-4" />
                 <span>Copy SQL Migration</span>
               </>
             )}
@@ -140,52 +140,52 @@ export function SqlAndRlsViewer() {
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-          <div className="p-4 rounded-2xl bg-[#faf8f4] border border-stone-200 space-y-1">
-            <div className="flex items-center gap-1.5 font-bold text-aberdeen-900">
-              <ShieldCheck className="w-4 h-4 text-aberdeen-700" />
+          <div className="p-4 rounded-2xl bg-[#f2f7fa] border border-[#c6dfed] space-y-1">
+            <div className="flex items-center gap-1.5 font-bold text-[#1e3f52]">
+              <ShieldCheck className="w-4 h-4 text-[#e59500]" />
               <span>Parent RLS Policy</span>
             </div>
-            <p className="text-stone-600">
+            <p className="text-[#275169]">
               Parents can only SELECT pupils, invoices, and diaries where{" "}
               <code className="font-mono">parent_id = auth.uid()</code>.
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-[#faf8f4] border border-stone-200 space-y-1">
-            <div className="flex items-center gap-1.5 font-bold text-aberdeen-900">
-              <ShieldCheck className="w-4 h-4 text-aberdeen-700" />
+          <div className="p-4 rounded-2xl bg-[#f2f7fa] border border-[#c6dfed] space-y-1">
+            <div className="flex items-center gap-1.5 font-bold text-[#1e3f52]">
+              <ShieldCheck className="w-4 h-4 text-[#e59500]" />
               <span>Teacher RLS Policy</span>
             </div>
-            <p className="text-stone-600">
+            <p className="text-[#275169]">
               Teachers can only INSERT/UPDATE diaries and view pupils in their{" "}
               <code className="font-mono">teacher_assignments</code> Step class.
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-[#faf8f4] border border-stone-200 space-y-1">
-            <div className="flex items-center gap-1.5 font-bold text-aberdeen-900">
-              <ShieldCheck className="w-4 h-4 text-aberdeen-700" />
+          <div className="p-4 rounded-2xl bg-[#f2f7fa] border border-[#c6dfed] space-y-1">
+            <div className="flex items-center gap-1.5 font-bold text-[#1e3f52]">
+              <ShieldCheck className="w-4 h-4 text-[#e59500]" />
               <span>Admin &amp; Owner Bypass</span>
             </div>
-            <p className="text-stone-600">
+            <p className="text-[#275169]">
               <code className="font-mono">is_admin_or_owner()</code> grants
               unrestricted CRUD across all 3 Steps, invoices, and forums.
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-[#faf8f4] border border-stone-200 space-y-1">
-            <div className="flex items-center gap-1.5 font-bold text-aberdeen-900">
-              <Database className="w-4 h-4 text-amber-600" />
+          <div className="p-4 rounded-2xl bg-[#f2f7fa] border border-[#c6dfed] space-y-1">
+            <div className="flex items-center gap-1.5 font-bold text-[#1e3f52]">
+              <Database className="w-4 h-4 text-[#e59500]" />
               <span>Free-Tier Constraint</span>
             </div>
-            <p className="text-stone-600">
+            <p className="text-[#275169]">
               100% structured relational text—zero file/photo bloat to preserve
               Supabase Free Tier bandwidth &amp; storage.
             </p>
           </div>
         </div>
 
-        <pre className="p-5 rounded-2xl bg-stone-950 text-stone-100 font-mono text-xs overflow-x-auto leading-relaxed">
+        <pre className="p-5 rounded-2xl bg-[#132936] text-white font-mono text-xs overflow-x-auto leading-relaxed">
           {SQL_MIGRATION_PREVIEW}
         </pre>
       </div>

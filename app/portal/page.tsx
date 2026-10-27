@@ -9,11 +9,14 @@ import {
   CreditCard,
   Database,
   ExternalLink,
+  GraduationCap,
   LayoutDashboard,
   LogOut,
   MessageSquare,
   Phone,
+  PlusCircle,
   Shield,
+  Sparkles,
   Sun,
   Users,
 } from "lucide-react";
@@ -59,7 +62,6 @@ export default function SchoolPortalPage() {
   const isTeacher = role === "teacher";
   const isParent = role === "parent";
 
-  // Build dynamic navigation items based on RBAC
   const navItems: {
     id: PortalTab;
     label: string;
@@ -67,7 +69,7 @@ export default function SchoolPortalPage() {
   }[] = React.useMemo(() => {
     if (isOwnerOrAdmin) {
       return [
-        { id: "overview", label: "Executive Overview", icon: LayoutDashboard },
+        { id: "overview", label: "School Overview", icon: LayoutDashboard },
         {
           id: "accounts",
           label: "Accounts & Pupils (+255)",
@@ -89,7 +91,7 @@ export default function SchoolPortalPage() {
     }
     if (isSecretary) {
       return [
-        { id: "overview", label: "Secretary Desk", icon: LayoutDashboard },
+        { id: "overview", label: "Secretary Reception", icon: LayoutDashboard },
         {
           id: "accounts",
           label: "Register Pupils (+255)",
@@ -114,7 +116,6 @@ export default function SchoolPortalPage() {
         { id: "overview", label: "My Step Class Roster", icon: Users },
       ];
     }
-    // Parent mobile-first view
     return [
       {
         id: "diaries",
@@ -125,49 +126,48 @@ export default function SchoolPortalPage() {
     ];
   }, [isOwnerOrAdmin, isSecretary, isTeacher]);
 
-  // Ensure activeTab is valid for the current role
   const effectiveTab: PortalTab = navItems.some((item) => item.id === activeTab)
     ? activeTab
     : navItems[0].id;
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-[#faf8f4] text-stone-900">
-      {/* Left Sidebar Navigation */}
-      <aside className="lg:w-72 bg-aberdeen-950 text-stone-100 flex flex-col justify-between shrink-0 border-b lg:border-b-0 lg:border-r border-aberdeen-900">
+    <div className="min-h-screen flex flex-col lg:flex-row bg-[#f4f8fb] text-[#132936]">
+      {/* Left Sidebar Navigation — Signature Deep Ocean Teal (#1e3f52) & Golden Marigold (#e59500) */}
+      <aside className="lg:w-72 bg-gradient-to-b from-[#1e3f52] via-[#183444] to-[#132936] text-white flex flex-col justify-between shrink-0 border-b lg:border-b-0 lg:border-r border-[#2f6280]">
         <div className="p-5 sm:p-6 space-y-6">
           {/* Brand Header */}
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-aberdeen-800 text-amber-300 flex items-center justify-center">
-                <Sun className="w-5 h-5" />
+              <div className="w-11 h-11 rounded-2xl bg-[#3b7a9e] text-[#fbd24d] flex items-center justify-center shadow-md ring-2 ring-[#7aa7c2]/40">
+                <Sun className="w-6 h-6" />
               </div>
               <div>
-                <span className="block font-display text-lg font-bold text-white leading-none">
-                  Aberdeen
+                <span className="block font-display text-lg font-bold text-white leading-none tracking-tight">
+                  ABERDEEN
                 </span>
-                <span className="block text-[11px] text-amber-300/90 font-medium mt-0.5">
-                  School Management Portal
+                <span className="block text-[10px] text-[#fbd24d] font-bold uppercase tracking-widest mt-0.5">
+                  Daycare &amp; Nursery
                 </span>
               </div>
             </Link>
 
             <Link
               href="/"
-              title="Public Website"
-              className="p-2 rounded-xl bg-aberdeen-900 hover:bg-aberdeen-800 text-stone-300 text-xs"
+              title="Public Reception Website"
+              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-[#c6dfed] text-xs transition-colors"
             >
               <ExternalLink className="w-4 h-4" />
             </Link>
           </div>
 
-          {/* Active User Profile Badge */}
-          <div className="p-4 rounded-2xl bg-aberdeen-900/90 border border-aberdeen-800 space-y-2">
+          {/* Active User Profile Card */}
+          <div className="p-4 rounded-2xl bg-[#275169]/90 border border-[#548eb0]/40 space-y-2 shadow-inner">
             <div className="flex items-center justify-between">
-              <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-stone-950 text-[10px] font-bold uppercase tracking-wider">
+              <span className="px-2.5 py-0.5 rounded-full bg-[#e59500] text-white text-[10px] font-bold uppercase tracking-wider">
                 {currentUser.role}
               </span>
-              <span className="font-mono text-xs text-stone-300 flex items-center gap-1">
-                <Phone className="w-3 h-3 text-amber-300" />
+              <span className="font-mono text-xs text-[#c6dfed] flex items-center gap-1">
+                <Phone className="w-3 h-3 text-[#fbd24d]" />
                 {currentUser.phone_number}
               </span>
             </div>
@@ -175,12 +175,12 @@ export default function SchoolPortalPage() {
               {currentUser.full_name}
             </p>
             {isTeacher && assignedTeacherStep && (
-              <p className="text-xs text-emerald-300 font-medium">
+              <p className="text-xs text-[#fbd24d] font-semibold">
                 Assigned: {STEP_META[assignedTeacherStep].shortLabel}
               </p>
             )}
             {isParent && parentPupils.length > 0 && (
-              <p className="text-xs text-sky-300 font-medium">
+              <p className="text-xs text-[#9bc6de] font-semibold">
                 Pupil: {parentPupils.map((p) => p.pupil_name).join(", ")}
               </p>
             )}
@@ -196,10 +196,10 @@ export default function SchoolPortalPage() {
                   key={item.id}
                   type="button"
                   onClick={() => setActiveTab(item.id)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all ${
+                  className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all ${
                     active
-                      ? "bg-amber-400 text-stone-950 font-bold shadow-sm"
-                      : "text-stone-300 hover:bg-aberdeen-900 hover:text-white"
+                      ? "bg-[#e59500] text-white shadow-md"
+                      : "text-[#c6dfed] hover:bg-white/10 hover:text-white"
                   }`}
                 >
                   <Icon className="w-4 h-4 shrink-0" />
@@ -210,18 +210,18 @@ export default function SchoolPortalPage() {
           </nav>
         </div>
 
-        {/* Interactive Role Switcher inside Sidebar */}
-        <div className="p-5 sm:p-6 border-t border-aberdeen-900 space-y-3 bg-aberdeen-950">
+        {/* Account Switcher (Only shows real provisioned accounts) */}
+        <div className="p-5 sm:p-6 border-t border-[#275169] space-y-3 bg-[#132936]/90">
           <div className="flex items-center justify-between text-xs">
-            <span className="font-bold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
-              <Shield className="w-3.5 h-3.5" /> Interactive Role Switcher
+            <span className="font-bold uppercase tracking-wider text-[#fbd24d] flex items-center gap-1.5">
+              <Shield className="w-3.5 h-3.5" /> Active Account ({profiles.length})
             </span>
           </div>
           <select
             aria-label="Switch active role account"
             value={currentUser.id}
             onChange={(e) => switchUserById(e.target.value)}
-            className="w-full px-3 py-2.5 rounded-xl bg-aberdeen-900 border border-aberdeen-700 text-xs text-white focus:outline-none focus:ring-2 focus:ring-amber-400"
+            className="w-full px-3 py-2.5 rounded-xl bg-[#1e3f52] border border-[#3b7a9e] text-xs text-white focus:outline-none focus:ring-2 focus:ring-[#e59500]"
           >
             {profiles.map((prof) => (
               <option key={prof.id} value={prof.id}>
@@ -230,66 +230,42 @@ export default function SchoolPortalPage() {
               </option>
             ))}
           </select>
-          <div className="flex items-center justify-between pt-1 text-[11px] text-stone-400">
+          <div className="flex items-center justify-between pt-1 text-[11px] text-[#9bc6de]">
             <Link
               href="/login"
               className="inline-flex items-center gap-1 hover:text-white"
             >
               <LogOut className="w-3.5 h-3.5" />
-              <span>Phone Login Screen</span>
+              <span>Login Screen</span>
             </Link>
-            <span>Supabase Free Tier</span>
+            <span>+255 716 004 601</span>
           </div>
         </div>
       </aside>
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Top Portal Header with Real-Time Notification Badge */}
-        <header className="sticky top-0 z-30 bg-[#faf8f4]/95 backdrop-blur-md border-b border-stone-200/80 px-4 sm:px-8 h-16 flex items-center justify-between gap-4">
+        {/* Top Portal Header */}
+        <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-[#c6dfed] px-4 sm:px-8 h-16 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
-            <h1 className="font-display text-lg sm:text-xl font-bold text-stone-900 truncate">
+            <h1 className="font-display text-lg sm:text-xl font-bold text-[#1e3f52] truncate">
               {navItems.find((i) => i.id === effectiveTab)?.label}
             </h1>
-            {isTeacher && (
-              <span className="hidden sm:inline-flex px-2.5 py-0.5 rounded-full bg-stone-200 text-stone-700 text-[11px] font-semibold">
-                Beem SMS Restricted
-              </span>
-            )}
+            <span className="hidden md:inline-flex items-center gap-1 px-3 py-0.5 rounded-full bg-[#f2f7fa] border border-[#c6dfed] text-[#3b7a9e] text-xs font-semibold italic">
+              <Sparkles className="w-3 h-3 text-[#e59500]" />
+              &ldquo;Step by Step, the child is prospering&rdquo;
+            </span>
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Quick Role Pill Buttons for Desktop Evaluators */}
-            <div className="hidden xl:flex items-center gap-1.5 bg-stone-200/70 p-1 rounded-xl text-xs">
-              {[
-                { id: "usr-owner-1", label: "Owner" },
-                { id: "usr-sec-1", label: "Secretary" },
-                { id: "usr-tchr-1", label: "Step 1 Teacher" },
-                { id: "usr-par-1", label: "Step 1 Parent" },
-              ].map((preset) => (
-                <button
-                  key={preset.id}
-                  type="button"
-                  onClick={() => switchUserById(preset.id)}
-                  className={`px-2.5 py-1 rounded-lg font-bold transition-all ${
-                    currentUser.id === preset.id
-                      ? "bg-aberdeen-800 text-white shadow-xs"
-                      : "text-stone-700 hover:bg-white"
-                  }`}
-                >
-                  {preset.label}
-                </button>
-              ))}
-            </div>
-
             {/* Notification Bell with Red Unread Badge */}
             <div className="relative">
               <button
                 type="button"
                 onClick={() => setNotifOpen((o) => !o)}
-                className="relative inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white hover:bg-stone-50 border border-stone-200/90 text-xs font-bold text-stone-800 shadow-xs"
+                className="relative inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#f2f7fa] hover:bg-[#e2eef5] border border-[#c6dfed] text-xs font-bold text-[#1e3f52] transition-colors"
               >
-                <Bell className="w-4 h-4 text-aberdeen-800" />
+                <Bell className="w-4 h-4 text-[#3b7a9e]" />
                 <span className="hidden sm:inline">Notifications</span>
                 {unreadNotificationCount > 0 && (
                   <span className="inline-flex items-center justify-center px-1.5 py-0.5 min-w-5 h-5 rounded-full bg-red-600 text-white text-[11px] font-bold animate-pulse">
@@ -299,13 +275,13 @@ export default function SchoolPortalPage() {
               </button>
 
               {notifOpen && (
-                <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-3xl border border-stone-200 shadow-2xl p-4 z-50 space-y-3">
-                  <div className="flex items-center justify-between border-b border-stone-100 pb-2.5">
+                <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-3xl border-2 border-[#7aa7c2] shadow-2xl p-4 z-50 space-y-3">
+                  <div className="flex items-center justify-between border-b border-[#e2eef5] pb-2.5">
                     <div>
-                      <span className="text-xs font-bold text-stone-900">
+                      <span className="text-xs font-bold text-[#1e3f52]">
                         In-App Notifications ({unreadNotificationCount} Unread)
                       </span>
-                      <p className="text-[11px] text-stone-500">
+                      <p className="text-[11px] text-[#548eb0]">
                         For {currentUser.full_name}
                       </p>
                     </div>
@@ -313,7 +289,7 @@ export default function SchoolPortalPage() {
                       <button
                         type="button"
                         onClick={markAllNotificationsRead}
-                        className="inline-flex items-center gap-1 text-[11px] font-bold text-aberdeen-700 hover:underline"
+                        className="inline-flex items-center gap-1 text-[11px] font-bold text-[#3b7a9e] hover:underline"
                       >
                         <CheckCheck className="w-3.5 h-3.5" />
                         <span>Mark all read</span>
@@ -323,8 +299,8 @@ export default function SchoolPortalPage() {
 
                   <div className="max-h-80 overflow-y-auto space-y-2 pr-1">
                     {userNotifications.length === 0 ? (
-                      <p className="text-xs text-stone-500 text-center py-6">
-                        No notifications for this account yet.
+                      <p className="text-xs text-[#548eb0] text-center py-6">
+                        No notifications yet.
                       </p>
                     ) : (
                       userNotifications.map((n) => (
@@ -334,18 +310,18 @@ export default function SchoolPortalPage() {
                           className={`p-3 rounded-2xl border text-xs cursor-pointer transition-colors ${
                             !n.is_read
                               ? "bg-red-50/70 border-red-200"
-                              : "bg-[#faf8f4] border-stone-200/70 opacity-75"
+                              : "bg-[#f2f7fa] border-[#e2eef5] opacity-75"
                           }`}
                         >
                           <div className="flex items-start justify-between gap-2">
-                            <span className="font-bold text-stone-900">
+                            <span className="font-bold text-[#1e3f52]">
                               {n.title}
                             </span>
                             {!n.is_read && (
                               <span className="w-2 h-2 rounded-full bg-red-600 shrink-0 mt-1" />
                             )}
                           </div>
-                          <p className="text-stone-600 mt-1 leading-relaxed">
+                          <p className="text-[#275169] mt-1 leading-relaxed">
                             {n.message}
                           </p>
                         </div>
@@ -362,20 +338,20 @@ export default function SchoolPortalPage() {
         <main className="flex-1 p-4 sm:p-8 max-w-7xl w-full mx-auto">
           {effectiveTab === "overview" && (
             <div className="space-y-8">
-              {/* Role Welcome Banner */}
-              <div className="bg-aberdeen-900 text-white rounded-3xl p-6 sm:p-8 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-6">
+              {/* Welcome Banner — Aberdeen Sky Blue & Deep Teal */}
+              <div className="bg-gradient-to-r from-[#1e3f52] via-[#2f6280] to-[#3b7a9e] text-white rounded-3xl p-6 sm:p-8 shadow-lg border-b-4 border-[#e59500] flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="space-y-2">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-bold uppercase tracking-wider">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#e59500] text-white text-xs font-bold uppercase tracking-wider">
                     Karibu • {currentUser.role.toUpperCase()} Portal
                   </span>
                   <h2 className="font-display text-2xl sm:text-3xl font-bold">
                     Habari, {currentUser.full_name}
                   </h2>
-                  <p className="text-stone-300 text-xs sm:text-sm max-w-2xl leading-relaxed">
+                  <p className="text-[#e2eef5] text-xs sm:text-sm max-w-2xl leading-relaxed">
                     {isOwnerOrAdmin &&
-                      "You have unrestricted executive access across Step 1, Step 2, and Step 3, account provisioning, fee invoicing, Beem Africa SMS, and all daily diaries."}
+                      "Welcome to your clean Aberdeen command center. Create accounts for your Secretary, Step 1–3 Teachers, and Pupils/Parents (+255), manage fee invoices, and send Beem Africa SMS."}
                     {isSecretary &&
-                      "Manage pupil admissions, generate and dispatch fee invoices via Beem Africa SMS (+255), update payment statuses, and moderate school forums."}
+                      "Register new pupils and parents (+255), generate and send fee invoices via Beem Africa SMS, and moderate school forums."}
                     {isTeacher &&
                       assignedTeacherStep &&
                       `You are assigned to ${STEP_META[assignedTeacherStep].title}. Manage your pupils' Daily Digital Diaries, Weekly Progress Reports, and Step Forum.`}
@@ -386,79 +362,78 @@ export default function SchoolPortalPage() {
                   {(isOwnerOrAdmin || isSecretary) && (
                     <button
                       type="button"
-                      onClick={() => setActiveTab("invoices")}
-                      className="px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-stone-950 font-bold text-xs shadow-sm"
+                      onClick={() => setActiveTab("accounts")}
+                      className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-[#e59500] hover:bg-[#c97d00] text-white font-bold text-xs sm:text-sm shadow-md transition-all"
                     >
-                      Invoices &amp; Beem SMS
+                      <PlusCircle className="w-4 h-4" />
+                      <span>Create New Account / Pupil</span>
                     </button>
                   )}
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setActiveTab(isSecretary ? "accounts" : "diaries")
-                    }
-                    className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs border border-white/20"
-                  >
-                    {isSecretary
-                      ? "Register New Pupil (+255)"
-                      : "Open Daily Diaries"}
-                  </button>
+                  {(isOwnerOrAdmin || isSecretary) && (
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab("invoices")}
+                      className="px-4 py-3 rounded-2xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs sm:text-sm border border-white/25 transition-all"
+                    >
+                      Fees &amp; Beem SMS
+                    </button>
+                  )}
                 </div>
               </div>
 
               {/* KPI Cards */}
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-white rounded-2xl border border-stone-200/90 p-5">
-                  <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
+                <div className="bg-white rounded-2xl border-2 border-[#c6dfed] p-5 shadow-xs">
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#3b7a9e]">
                     Enrolled Pupils
                   </span>
-                  <p className="font-display text-3xl font-bold text-stone-900 mt-1">
+                  <p className="font-display text-3xl font-bold text-[#1e3f52] mt-1">
                     {isTeacher && assignedTeacherStep
                       ? pupils.filter(
                           (p) => p.class_key === assignedTeacherStep
                         ).length
                       : pupils.length}
                   </p>
-                  <p className="text-xs text-stone-500 mt-1">
+                  <p className="text-xs text-[#548eb0] mt-1">
                     {isTeacher && assignedTeacherStep
                       ? `In ${STEP_META[assignedTeacherStep].shortLabel}`
                       : "Across Step 1, Step 2 & Step 3"}
                   </p>
                 </div>
 
-                <div className="bg-white rounded-2xl border border-stone-200/90 p-5">
-                  <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
+                <div className="bg-white rounded-2xl border-2 border-[#c6dfed] p-5 shadow-xs">
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#3b7a9e]">
+                    Staff &amp; Teachers
+                  </span>
+                  <p className="font-display text-3xl font-bold text-[#1e3f52] mt-1">
+                    {profiles.filter((p) => p.role !== "parent").length}
+                  </p>
+                  <p className="text-xs text-[#548eb0] mt-1">
+                    Active Staff Accounts
+                  </p>
+                </div>
+
+                <div className="bg-white rounded-2xl border-2 border-[#c6dfed] p-5 shadow-xs">
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#3b7a9e]">
                     Daily Diaries Logged
                   </span>
-                  <p className="font-display text-3xl font-bold text-aberdeen-800 mt-1">
+                  <p className="font-display text-3xl font-bold text-[#3b7a9e] mt-1">
                     {diaries.length}
                   </p>
-                  <p className="text-xs text-emerald-700 font-semibold mt-1">
+                  <p className="text-xs text-[#e59500] font-bold mt-1">
                     {diaries.filter((d) => d.parent_signed).length} Signed Off by
                     Parents
                   </p>
                 </div>
 
-                <div className="bg-white rounded-2xl border border-stone-200/90 p-5">
-                  <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
-                    Active Forum Posts
-                  </span>
-                  <p className="font-display text-3xl font-bold text-stone-900 mt-1">
-                    {forumPosts.length}
-                  </p>
-                  <p className="text-xs text-stone-500 mt-1">
-                    Main Forum + 3 Step Boards
-                  </p>
-                </div>
-
-                <div className="bg-white rounded-2xl border border-stone-200/90 p-5">
-                  <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
+                <div className="bg-white rounded-2xl border-2 border-[#c6dfed] p-5 shadow-xs">
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#3b7a9e]">
                     Fee Invoices Tracked
                   </span>
-                  <p className="font-display text-3xl font-bold text-amber-700 mt-1">
+                  <p className="font-display text-3xl font-bold text-[#e59500] mt-1">
                     {invoices.length}
                   </p>
-                  <p className="text-xs text-stone-500 mt-1">
+                  <p className="text-xs text-[#548eb0] mt-1">
                     {invoices.filter((i) => i.status === "paid").length} Paid in
                     Full
                   </p>
@@ -473,40 +448,62 @@ export default function SchoolPortalPage() {
                   return (
                     <div
                       key={sk}
-                      className="bg-white rounded-3xl border border-stone-200/90 p-6 space-y-4 shadow-sm"
+                      className="bg-white rounded-3xl border-2 border-[#c6dfed] p-6 space-y-4 shadow-xs flex flex-col justify-between"
                     >
-                      <div className="flex items-center justify-between">
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-bold border ${meta.badgeColor}`}
-                        >
-                          {meta.shortLabel}
-                        </span>
-                        <span className="text-xs font-bold text-stone-500">
-                          {stepPupils.length} Pupils
-                        </span>
-                      </div>
-                      <h3 className="font-display text-lg font-bold text-stone-900">
-                        {meta.title}
-                      </h3>
-                      <div className="space-y-2 pt-2 border-t border-stone-100">
-                        {stepPupils.map((p) => (
-                          <div
-                            key={p.id}
-                            className="p-3 rounded-xl bg-[#faf8f4] border border-stone-200/70 flex items-center justify-between text-xs"
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span
+                            className={`px-3 py-1 rounded-full text-xs font-bold border ${meta.badgeColor}`}
                           >
-                            <div>
-                              <p className="font-bold text-stone-900">
-                                {p.pupil_name}
-                              </p>
-                              <p className="text-stone-500">
-                                Parent: {p.parent_name}
-                              </p>
-                            </div>
-                            <span className="font-mono text-stone-600">
-                              {p.parent_phone}
-                            </span>
+                            {meta.shortLabel}
+                          </span>
+                          <span className="text-xs font-bold text-[#3b7a9e]">
+                            {stepPupils.length} Pupil(s)
+                          </span>
+                        </div>
+                        <h3 className="font-display text-lg font-bold text-[#1e3f52]">
+                          {meta.title}
+                        </h3>
+
+                        {stepPupils.length === 0 ? (
+                          <div className="p-5 rounded-2xl bg-[#f2f7fa] border border-dashed border-[#9bc6de] text-center space-y-2">
+                            <GraduationCap className="w-6 h-6 text-[#548eb0] mx-auto" />
+                            <p className="text-xs font-semibold text-[#275169]">
+                              No pupils enrolled in {meta.shortLabel} yet.
+                            </p>
+                            {(isOwnerOrAdmin || isSecretary) && (
+                              <button
+                                type="button"
+                                onClick={() => setActiveTab("accounts")}
+                                className="inline-flex items-center gap-1 text-xs font-bold text-[#e59500] hover:underline"
+                              >
+                                <PlusCircle className="w-3.5 h-3.5" />
+                                <span>Enroll First Pupil</span>
+                              </button>
+                            )}
                           </div>
-                        ))}
+                        ) : (
+                          <div className="space-y-2 pt-2 border-t border-[#e2eef5]">
+                            {stepPupils.map((p) => (
+                              <div
+                                key={p.id}
+                                className="p-3 rounded-xl bg-[#f2f7fa] border border-[#c6dfed] flex items-center justify-between text-xs"
+                              >
+                                <div>
+                                  <p className="font-bold text-[#1e3f52]">
+                                    {p.pupil_name}
+                                  </p>
+                                  <p className="text-[#3b7a9e]">
+                                    Parent: {p.parent_name}
+                                  </p>
+                                </div>
+                                <span className="font-mono text-[#275169]">
+                                  {p.parent_phone}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                   );
