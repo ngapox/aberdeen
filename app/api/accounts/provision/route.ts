@@ -3,6 +3,10 @@ import { createClient } from "@supabase/supabase-js";
 import { isValidTanzaniaPhone } from "@/lib/beem/sms";
 import { StepClassKey, UserRole } from "@/lib/supabase/types";
 
+export function phoneToInternalAuthEmail(phoneNumber: string): string {
+  return `${phoneNumber.trim().replace(/^\+/, "")}@aberdeen.sc.tz`;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -83,59 +87,86 @@ export async function POST(req: NextRequest) {
         auth: { autoRefreshToken: false, persistSession: false },
       });
 
-      const authUserRes = await adminSupabase.auth.admin.createUser({
-        phone: phoneNumber,
-        password: tempPassword || "Aberdeen2026!",
-        phone_confirm: true,
-        user_metadata: {
-          full_name: fullName,
-          role: accountType,
-        },
-      });
+      // Check if profile with this +255 phone number already exists (e.g. parent enrolling another child)
+      const { data: existingProfile } = await adminSupabase
+        .from("profiles")
+        .select("id")
+        .eq("phone_number", phoneNumber.trim())
+        .maybeSingle();
 
-      if (authUserRes.error || !authUserRes.data.user) {
-        return NextResponse.json(
-          {
-            error:
-              authUserRes.error?.message || "Failed to create Supabase Auth user.",
+      let userId = existingProfile?.id;
+
+      if (!userId) {
+        const syntheticEmail = phoneToInternalAuthEmail(phoneNumber);
+        const passwordToUse = tempPassword || "Aberdeen2026!";
+
+        // Create user in Supabase Auth (supports both Phone Auth and Email fallback for Free Tier)
+        const authUserRes = await adminSupabase.auth.admin.createUser({
+          email: syntheticEmail,
+          phone: phoneNumber.trim(),
+          password: passwordToUse,
+          email_confirm: true,
+          phone_confirm: true,
+          user_metadata: {
+            full_name: fullName,
+            phone_number: phoneNumber.trim(),
+            role: accountType,
           },
-          { status: 400 }
-        );
-      }
+        });
 
-      const userId = authUserRes.data.user.id;
+        if (authUserRes.error || !authUserRes.data.user) {
+          return NextResponse.json(
+            {
+              error:
+                authUserRes.error?.message ||
+                "Failed to create Supabase Auth user.",
+            },
+            { status: 400 }
+          );
+        }
 
-      // Insert into profiles
-      const { error: profileErr } = await adminSupabase.from("profiles").insert({
-        id: userId,
-        phone_number: phoneNumber,
-        full_name: fullName,
-        role: accountType,
-      });
+        userId = authUserRes.data.user.id;
 
-      if (profileErr) {
-        return NextResponse.json({ error: profileErr.message }, { status: 400 });
+        // Insert into profiles
+        const { error: profileErr } = await adminSupabase
+          .from("profiles")
+          .upsert({
+            id: userId,
+            phone_number: phoneNumber.trim(),
+            full_name: fullName.trim(),
+            role: accountType,
+          });
+
+        if (profileErr) {
+          return NextResponse.json(
+            { error: profileErr.message },
+            { status: 400 }
+          );
+        }
       }
 
       // Resolve class UUID if teacher or parent
-      if (assignedClass) {
+      if (assignedClass && userId) {
         const { data: classRow } = await adminSupabase
           .from("classes")
           .select("id")
           .eq("name", assignedClass)
-          .single();
+          .maybeSingle();
 
         if (classRow) {
           if (accountType === "teacher") {
-            await adminSupabase.from("teacher_assignments").insert({
-              teacher_id: userId,
-              class_id: classRow.id,
-            });
+            await adminSupabase.from("teacher_assignments").upsert(
+              {
+                teacher_id: userId,
+                class_id: classRow.id,
+              },
+              { onConflict: "teacher_id,class_id" }
+            );
           } else if (accountType === "parent" && pupilName) {
             await adminSupabase.from("pupils").insert({
-              pupil_name: pupilName,
+              pupil_name: pupilName.trim(),
               parent_id: userId,
-              parent_name: fullName,
+              parent_name: fullName.trim(),
               class_id: classRow.id,
               is_active: true,
             });

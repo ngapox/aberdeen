@@ -41,11 +41,24 @@ export default function PortalLoginPage() {
     try {
       if (isSupabaseConfigured()) {
         const supabase = createClient();
-        const { error: sbErr } = await supabase.auth.signInWithPassword({
+        // Try Phone Auth first, then synthetic +255 email fallback (for Free Tier without SMS OTP provider)
+        const { error: sbPhoneErr } = await supabase.auth.signInWithPassword({
           phone: trimmed,
           password,
         });
-        if (!sbErr) {
+        if (!sbPhoneErr) {
+          loginByPhone(trimmed);
+          router.push("/portal");
+          return;
+        }
+
+        const syntheticEmail = `${trimmed.replace(/^\+/, "")}@aberdeen.sc.tz`;
+        const { error: sbEmailErr } = await supabase.auth.signInWithPassword({
+          email: syntheticEmail,
+          password,
+        });
+        if (!sbEmailErr) {
+          loginByPhone(trimmed);
           router.push("/portal");
           return;
         }
