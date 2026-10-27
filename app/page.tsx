@@ -174,10 +174,10 @@ export default function PublicShowcasePage() {
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#e59500] text-white font-bold text-[11px] tracking-wide">
-              <Sparkles className="w-3 h-3" /> Welcome to Aberdeen
+              <Sparkles className="w-3 h-3" /> Official School Motto
             </span>
-            <span className="text-[#c6dfed] font-medium">
-              Nurturing the Young Minds of Tomorrow • Step 1, Step 2 &amp; Step 3
+            <span className="text-[#fbd24d] font-bold italic">
+              &ldquo;Step by Step, the child is prospering&rdquo;
             </span>
           </div>
           <div className="flex items-center gap-5 text-[#e2eef5] font-medium">
@@ -257,15 +257,14 @@ export default function PublicShowcasePage() {
             <div className="lg:col-span-6 space-y-6">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#1e3f52]/40 backdrop-blur-xs border border-white/25 text-xs font-bold tracking-wide uppercase">
                 <Heart className="w-3.5 h-3.5 text-[#fbd24d] fill-[#fbd24d]" />
-                <span>A Warm Second Home for Ages 18 Months – 6 Years</span>
+                <span>Aberdeen Daycare &amp; Nursery • Ages 18 Months – 6 Years</span>
               </div>
 
               <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.08] tracking-tight drop-shadow-xs">
-                Nurturing the{" "}
-                <span className="inline-block px-3 py-0.5 rounded-2xl bg-[#e59500] text-white transform -rotate-1 shadow-md">
-                  Young Minds
+                <span className="inline-block px-3.5 py-1 rounded-2xl bg-[#e59500] text-white transform -rotate-1 shadow-md">
+                  Step by Step,
                 </span>{" "}
-                of Tomorrow.
+                the Child is Prospering.
               </h1>
 
               <p className="text-base sm:text-lg text-white/95 leading-relaxed max-w-xl font-medium">
@@ -471,13 +470,13 @@ export default function PublicShowcasePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           <div className="text-center max-w-2xl mx-auto space-y-2">
             <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#fffbeb] border border-[#fde58a] text-[#c97d00] text-xs font-bold uppercase tracking-wider">
-              <Sparkles className="w-3.5 h-3.5" /> Growing Step by Step
+              <Sparkles className="w-3.5 h-3.5" /> &ldquo;Step by Step, the child is prospering&rdquo;
             </span>
             <h2 className="font-display text-3xl sm:text-4xl font-bold text-[#1e3f52]">
               Three Joyful Stages of Early Learning
             </h2>
             <p className="text-sm text-[#2f6280]">
-              From first toddler footsteps to confident primary school readiness.
+              From Step 1 to Step 3, we walk alongside every child as they blossom and prosper.
             </p>
           </div>
 

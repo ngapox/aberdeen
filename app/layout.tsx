@@ -3,9 +3,10 @@ import "./globals.css";
 import { PortalProvider } from "@/components/ui/portal-context";
 
 export const metadata: Metadata = {
-  title: "Aberdeen Daycare & Nursery School | Nurturing Young Minds in Tanzania",
+  title:
+    "Aberdeen Daycare & Nursery School | Step by Step, the child is prospering",
   description:
-    "Premier early childhood education in Tanzania offering Step 1 (Daycare), Step 2 (Nursery), and Step 3 (Pre-Unit) with a real-time Parent & Teacher Digital Diary Portal.",
+    "Step by Step, the child is prospering. Premier early childhood education in Tanzania offering Step 1 (Daycare), Step 2 (Nursery), and Step 3 (Pre-Unit) under Director Madam Elizabeth Nkya.",
 };
 
 export default function RootLayout({

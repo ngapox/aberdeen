@@ -111,8 +111,8 @@ export default function PortalLoginPage() {
               <h1 className="font-display text-2xl font-bold text-stone-900">
                 Aberdeen Portal Login
               </h1>
-              <p className="text-xs text-stone-500">
-                Sign in with your provisioned Tanzania (+255) phone number
+              <p className="text-xs font-semibold text-aberdeen-700 italic">
+                &ldquo;Step by Step, the child is prospering&rdquo;
               </p>
             </div>
           </div>
