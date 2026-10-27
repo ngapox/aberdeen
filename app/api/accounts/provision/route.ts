@@ -3,7 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { isValidTanzaniaPhone } from "@/lib/beem/sms";
 import { StepClassKey, UserRole } from "@/lib/supabase/types";
 
-export function phoneToInternalAuthEmail(phoneNumber: string): string {
+function phoneToInternalAuthEmail(phoneNumber: string): string {
   return `${phoneNumber.trim().replace(/^\+/, "")}@aberdeen.sc.tz`;
 }
 
