@@ -3,107 +3,172 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import {
-  Award,
+  Baby,
   BookOpen,
   Calendar,
+  Camera,
   CheckCircle2,
   ChevronRight,
-  Clock,
-  Compass,
-  GraduationCap,
   Heart,
   Lock,
   MapPin,
-  MessageSquare,
+  Palette,
   Phone,
-  ShieldCheck,
+  Smile,
   Sparkles,
+  Star,
   Sun,
   Users,
 } from "lucide-react";
-import { STEP_META } from "@/lib/supabase/seed-data";
 import { StepClassKey } from "@/lib/supabase/types";
 
-const STAFF_SHOWCASE = [
+const PLAYFUL_STEPS: {
+  key: StepClassKey;
+  badge: string;
+  title: string;
+  age: string;
+  tagline: string;
+  cardBg: string;
+  badgeBg: string;
+  accentColor: string;
+  photoUrl: string;
+  photoPlaceholderLabel: string;
+  highlights: string[];
+}[] = [
   {
-    name: "Dr. Neema Mwakasege",
-    role: "Founder & School Director (Owner)",
-    credentials: "Ph.D. Early Childhood Curriculum • 16+ Yrs Experience",
-    bio: "Passionate about blending Montessori discovery with strong Tanzanian moral values, literacy, and family partnership.",
-    badge: "Leadership",
-    initials: "NM",
-    color: "bg-aberdeen-800 text-amber-200",
+    key: "step_1",
+    badge: "Step 1 • Daycare",
+    title: "Little Explorers",
+    age: "18 Months – 3 Years",
+    tagline:
+      "Sensory play, singing, cuddles, and joyful first friendships in a safe home-away-from-home.",
+    cardBg: "bg-[#FFF9E6] border-[#FFE082]",
+    badgeBg: "bg-[#FFB703] text-[#144D63]",
+    accentColor: "text-[#D98A00]",
+    photoUrl:
+      "https://images.unsplash.com/photo-1587654780291-39c9404d746b?auto=format&fit=crop&w=800&q=80",
+    photoPlaceholderLabel: "Photo Placeholder: Step 1 Toddlers Playing with Blocks",
+    highlights: [
+      "Sensory & Montessori play",
+      "Swahili & English songs",
+      "Cozy naps & yummy meals",
+    ],
   },
   {
-    name: "Bi. Salma Kikwete",
-    role: "Head of Administration & Admissions",
-    credentials: "B.Com Accounting & School Administration",
-    bio: "Coordinates parent admissions, transparent fee invoicing, and seamless school-to-home SMS communications.",
-    badge: "Administration",
-    initials: "SK",
-    color: "bg-amber-700 text-amber-50",
+    key: "step_2",
+    badge: "Step 2 • Nursery",
+    title: "Curious Builders",
+    age: "3 – 4.5 Years",
+    tagline:
+      "Jolly Phonics sounds, finger painting, counting games, and outdoor garden adventures.",
+    cardBg: "bg-[#E8F7FF] border-[#9AD9F5]",
+    badgeBg: "bg-[#38A3D0] text-white",
+    accentColor: "text-[#1F6E8C]",
+    photoUrl:
+      "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=800&q=80",
+    photoPlaceholderLabel: "Photo Placeholder: Step 2 Nursery Painting & Phonics",
+    highlights: [
+      "Fun Jolly Phonics sounds",
+      "Hands-on counting & puzzles",
+      "Painting, storytelling & play",
+    ],
   },
   {
-    name: "Mwl. Grace Komba",
-    role: "Lead Educator — Step 1 (Daycare / Early Toddler)",
-    credentials: "Diploma in Montessori Early Toddler Care & Infant First Aid",
-    bio: "Specializes in sensory exploration, early bilingual songs, and nurturing routines for 18-month to 3-year-old toddlers.",
-    badge: "Step 1 Lead",
-    initials: "GK",
-    color: "bg-emerald-700 text-emerald-50",
-  },
-  {
-    name: "Mwl. David Massawe",
-    role: "Lead Educator — Step 2 (Nursery / Mid Toddler)",
-    credentials: "B.Ed. Early Childhood Education • Jolly Phonics Certified",
-    bio: "Guides children through joyful phonetic sound blending, hands-on counting games, and expressive storytelling.",
-    badge: "Step 2 Lead",
-    initials: "DM",
-    color: "bg-teal-700 text-teal-50",
-  },
-  {
-    name: "Mwl. Amina Said",
-    role: "Lead Educator — Step 3 (Pre-Unit / Primary Transition)",
-    credentials: "B.Ed. Primary Foundation & Numeracy Specialist",
-    bio: "Prepares Pre-Unit scholars with confident reading fluency, mental arithmetic, and leadership readiness for Standard 1.",
-    badge: "Step 3 Lead",
-    initials: "AS",
-    color: "bg-sky-800 text-sky-50",
+    key: "step_3",
+    badge: "Step 3 • Pre-Unit",
+    title: "Rising Stars",
+    age: "4.5 – 6 Years",
+    tagline:
+      "Confident early reading, fun number games, and leadership skills ready for Primary Standard 1!",
+    cardBg: "bg-[#EDFAF2] border-[#A3E4BC]",
+    badgeBg: "bg-[#2FB36D] text-white",
+    accentColor: "text-[#1E874F]",
+    photoUrl:
+      "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80",
+    photoPlaceholderLabel: "Photo Placeholder: Step 3 Pre-Unit Reading Circle",
+    highlights: [
+      "Reading & neat handwriting",
+      "Fun addition & discovery",
+      "Ready for Primary School!",
+    ],
   },
 ];
 
-const UPCOMING_EVENTS = [
+const CAMPUS_GALLERY = [
   {
-    date: "NOV 06",
-    day: "Friday • 09:00 AM",
-    title: "Step 1 & Step 2 Open Classroom Sensory Morning",
-    category: "Open House",
-    description:
-      "Prospective and current parents are invited to observe our Montessori sensory stations and outdoor discovery garden.",
+    title: "Bright Montessori Classrooms",
+    tag: "Indoor Learning",
+    placeholderNote: "Replace with Aberdeen Classroom Photo",
+    image:
+      "https://images.unsplash.com/photo-1588072432836-e10032774350?auto=format&fit=crop&w=800&q=80",
+    rotation: "-rotate-1",
+    frameColor: "bg-[#FFF8E1] border-[#FFD54F]",
   },
   {
-    date: "NOV 13",
-    day: "Friday • 09:00 AM – 12:30 PM",
-    title: "Term II Parents & Teachers Fellowship Showcase",
-    category: "School-Wide Event",
-    description:
-      "Recitations, Jolly Phonics demonstrations, and developmental progress exhibitions across Step 1, Step 2, and Step 3.",
+    title: "Safe Shaded Play Courtyard",
+    tag: "Outdoor Fun",
+    placeholderNote: "Replace with Aberdeen Playground Photo",
+    image:
+      "https://images.unsplash.com/photo-1566454544259-f4b94c3d758c?auto=format&fit=crop&w=800&q=80",
+    rotation: "rotate-1",
+    frameColor: "bg-[#E6F6FF] border-[#81D4FA]",
   },
   {
-    date: "NOV 20",
-    day: "Friday • 10:00 AM",
-    title: "Step 3 Pre-Unit Primary Readiness Celebration",
-    category: "Step 3 Milestone",
-    description:
-      "Celebrating our graduating Pre-Unit scholars as they demonstrate early reading fluency and arithmetic mastery.",
+    title: "Creative Arts & Story Corner",
+    tag: "Imagination",
+    placeholderNote: "Replace with Kids Art & Reading Photo",
+    image:
+      "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=800&q=80",
+    rotation: "-rotate-1",
+    frameColor: "bg-[#FFF3E0] border-[#FFCC80]",
   },
   {
-    date: "DEC 04",
-    day: "Friday • 08:30 AM",
-    title: "End-of-Year Graduation & Cultural Family Festival",
-    category: "Annual Ceremony",
-    description:
-      "Certificate presentation, traditional songs, and community luncheon for all Aberdeen families.",
+    title: "Nutritious Meals & Cozy Naps",
+    tag: "Healthy Care",
+    placeholderNote: "Replace with Dining / Nap Room Photo",
+    image:
+      "https://images.unsplash.com/photo-1540479859555-17af45c78602?auto=format&fit=crop&w=800&q=80",
+    rotation: "rotate-1",
+    frameColor: "bg-[#E8F8F0] border-[#A5D6A7]",
+  },
+];
+
+const FRIENDLY_TEAM = [
+  {
+    name: "Dr. Neema Mwakasege",
+    role: "Founder & School Director",
+    badge: "Mama Aberdeen",
+    loveNote: "Loves children's storybooks & morning songs",
+    photo:
+      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80",
+    bg: "bg-[#FFF9E6] border-[#FFE082]",
+  },
+  {
+    name: "Mwl. Grace Komba",
+    role: "Step 1 (Daycare) Lead Teacher",
+    badge: "Step 1 Care",
+    loveNote: "Montessori toddler specialist & gentle routines",
+    photo:
+      "https://images.unsplash.com/photo-1580894732444-8ecded7900cd?auto=format&fit=crop&w=600&q=80",
+    bg: "bg-[#E8F7FF] border-[#9AD9F5]",
+  },
+  {
+    name: "Mwl. David Massawe",
+    role: "Step 2 (Nursery) Lead Teacher",
+    badge: "Step 2 Phonics",
+    loveNote: "Jolly Phonics, counting games & big smiles",
+    photo:
+      "https://images.unsplash.com/photo-1544717297-fa95b6ee9643?auto=format&fit=crop&w=600&q=80",
+    bg: "bg-[#EDFAF2] border-[#A3E4BC]",
+  },
+  {
+    name: "Mwl. Amina Said",
+    role: "Step 3 (Pre-Unit) Lead Teacher",
+    badge: "Step 3 Prep",
+    loveNote: "Gets little scholars confident for Standard 1",
+    photo:
+      "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=600&q=80",
+    bg: "bg-[#FFF3E0] border-[#FFCC80]",
   },
 ];
 
@@ -114,7 +179,6 @@ export default function PublicShowcasePage() {
     phone: "+255",
     childName: "",
     step: "step_1" as StepClassKey,
-    notes: "",
   });
   const [phoneError, setPhoneError] = useState("");
 
@@ -131,241 +195,223 @@ export default function PublicShowcasePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#faf8f4] text-stone-900">
-      {/* Top Announcement Strip */}
-      <div className="bg-aberdeen-900 text-amber-100 text-xs sm:text-sm py-2.5 px-4 border-b border-aberdeen-800">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+    <div className="min-h-screen flex flex-col bg-[#F4FBFF] text-[#144D63] selection:bg-[#FFB703] selection:text-[#144D63]">
+      {/* Cheerful Top Sunshine Ribbon */}
+      <div className="bg-[#FFE58F] text-[#144D63] text-xs sm:text-sm py-2.5 px-4 border-b-2 border-[#FFD24C]">
+        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2 font-bold">
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 font-semibold text-[11px] uppercase tracking-wider">
-              <Sparkles className="w-3 h-3" /> 2026/2027 Admissions Open
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#FFB703] text-[#144D63] text-[11px] uppercase tracking-wider shadow-xs">
+              <Sparkles className="w-3.5 h-3.5" /> 2026 / 2027 Admissions Open!
             </span>
-            <span className="text-stone-200">
-              Enrolling Step 1 (Daycare), Step 2 (Nursery) &amp; Step 3 (Pre-Unit)
+            <span>
+              Welcoming Ages 18 Months – 6 Years (Step 1, Step 2 &amp; Step 3)
             </span>
           </div>
-          <div className="hidden md:flex items-center gap-5 text-stone-300 text-xs">
+          <div className="hidden md:flex items-center gap-5 text-xs font-extrabold text-[#1F6E8C]">
             <span className="flex items-center gap-1.5">
-              <Phone className="w-3.5 h-3.5 text-amber-400" /> +255 754 100 100
+              <Phone className="w-3.5 h-3.5 text-[#E08E00]" /> +255 754 100 100
             </span>
             <span className="flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5 text-amber-400" /> Dar es Salaam / Arusha, Tanzania
+              <MapPin className="w-3.5 h-3.5 text-[#E08E00]" /> Tanzania
             </span>
           </div>
         </div>
       </div>
 
-      {/* Main Navigation */}
-      <header className="sticky top-0 z-40 bg-[#faf8f4]/95 backdrop-blur-md border-b border-stone-200/80">
+      {/* Playful Floating Header */}
+      <header className="sticky top-0 z-40 bg-[#F4FBFF]/90 backdrop-blur-md border-b-2 border-[#D4EEFC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-11 h-11 rounded-2xl bg-aberdeen-800 flex items-center justify-center text-amber-300 shadow-sm group-hover:bg-aberdeen-700 transition-colors">
-              <Sun className="w-6 h-6" />
+            <div className="w-12 h-12 rounded-2xl bg-[#FFB703] border-2 border-[#144D63] flex items-center justify-center text-[#144D63] shadow-[0_4px_0_#144D63] group-hover:scale-105 transition-transform">
+              <Sun className="w-7 h-7 fill-[#FFF6D6]" />
             </div>
             <div>
-              <span className="block font-display text-lg sm:text-xl font-bold tracking-tight text-aberdeen-950 leading-none">
+              <span
+                style={{ fontFamily: "var(--font-display)" }}
+                className="block text-xl sm:text-2xl font-bold tracking-tight text-[#144D63] leading-none"
+              >
                 Aberdeen
               </span>
-              <span className="block text-xs font-medium text-stone-600 tracking-wide mt-0.5">
+              <span className="block text-xs font-extrabold text-[#3888A8] tracking-wide mt-0.5">
                 Daycare &amp; Nursery School
               </span>
             </div>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-stone-700">
-            <a
-              href="#mission"
-              className="hover:text-aberdeen-700 transition-colors"
-            >
-              Our Values
-            </a>
+          <nav className="hidden md:flex items-center gap-7 text-sm font-extrabold text-[#1F6E8C]">
             <a
               href="#classes"
-              className="hover:text-aberdeen-700 transition-colors"
+              className="hover:text-[#E08E00] transition-colors"
             >
-              3 Developmental Steps
+              Our 3 Classes
             </a>
             <a
-              href="#staff"
-              className="hover:text-aberdeen-700 transition-colors"
+              href="#gallery"
+              className="hover:text-[#E08E00] transition-colors"
             >
-              Teachers &amp; Leadership
+              School Life Photos
             </a>
             <a
-              href="#events"
-              className="hover:text-aberdeen-700 transition-colors"
+              href="#teachers"
+              className="hover:text-[#E08E00] transition-colors"
             >
-              Events &amp; Calendar
+              Meet Our Teachers
             </a>
             <a
-              href="#admissions"
-              className="hover:text-aberdeen-700 transition-colors"
+              href="#visit"
+              className="hover:text-[#E08E00] transition-colors"
             >
-              Admission Inquiry
+              Join Us
             </a>
           </nav>
 
+          {/* Clean Staff & Parent Portal Login Button */}
           <div className="flex items-center gap-2.5">
             <Link
               href="/login"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-aberdeen-800 hover:bg-aberdeen-900 text-white text-sm font-semibold shadow-sm transition-all"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#2B7A9B] hover:bg-[#1F627E] text-white text-xs sm:text-sm font-extrabold border-2 border-[#144D63] shadow-[0_3px_0_#144D63] active:translate-y-0.5 transition-all"
             >
-              <Lock className="w-4 h-4 text-amber-300" />
-              <span>Portal Login</span>
+              <Lock className="w-4 h-4 text-[#FFD15C]" />
+              <span>Staff &amp; Parent Login</span>
             </Link>
           </div>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden pt-10 pb-20 sm:pt-16 sm:pb-24 border-b border-stone-200/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-12 gap-12 items-center">
-            <div className="lg:col-span-7 space-y-6">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-aberdeen-100/90 border border-aberdeen-200 text-aberdeen-800 text-xs font-semibold">
-                <Heart className="w-3.5 h-3.5 text-amber-600 fill-amber-500" />
-                <span>Warm, Safe &amp; Structured Early Learning in Tanzania</span>
+      {/* Joyful Sky-Blue & Sunshine Hero Section */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#D8F1FF] via-[#EAF8FF] to-[#F4FBFF] pt-10 pb-20 sm:pt-14 sm:pb-24">
+        {/* Decorative Playful Clouds & Stars */}
+        <div className="pointer-events-none select-none absolute top-8 left-8 hidden lg:block animate-float-slow">
+          <div className="w-16 h-16 rounded-full bg-[#FFE082]/70 blur-xs" />
+        </div>
+        <div className="pointer-events-none select-none absolute bottom-12 right-10 hidden lg:block animate-float-delayed">
+          <div className="w-24 h-24 rounded-full bg-[#9AD9F5]/50 blur-sm" />
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+            {/* Left Playful Story & CTAs */}
+            <div className="lg:col-span-6 space-y-6 text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border-2 border-[#8AD1F0] text-[#1F6E8C] text-xs sm:text-sm font-extrabold shadow-xs">
+                <Heart className="w-4 h-4 text-[#FFB703] fill-[#FFB703]" />
+                <span>A Happy, Safe &amp; Loving Start for Your Little One!</span>
               </div>
 
-              <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-aberdeen-950 tracking-tight leading-[1.1]">
-                Where Little Footsteps Grow Into{" "}
-                <span className="text-aberdeen-700 underline decoration-amber-400/80 decoration-wavy decoration-2 underline-offset-8">
-                  Confident Learners.
+              <h1
+                style={{ fontFamily: "var(--font-display)" }}
+                className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#144D63] tracking-tight leading-[1.12]"
+              >
+                Where Little Smiles Grow Into{" "}
+                <span className="inline-block px-3 py-0.5 rounded-2xl bg-[#FFB703] text-[#144D63] -rotate-1 shadow-[0_4px_0_#144D63]">
+                  Big Dreams!
                 </span>
               </h1>
 
-              <p className="text-base sm:text-lg text-stone-600 max-w-2xl leading-relaxed">
-                At <strong>Aberdeen Daycare and Nursery School</strong>, we
-                nurture children from 18 months to 6 years through three
-                purposeful developmental stages—supported by our real-time
-                Parent &amp; Teacher Digital Diary, transparent fee tracking, and
-                instant Beem SMS updates.
+              <p className="text-base sm:text-lg text-[#28667E] font-medium max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                Welcome to <strong>Aberdeen Daycare &amp; Nursery School</strong>!
+                We turn every day into a joyful adventure of play, songs,
+                phonics, and discovery for children aged{" "}
+                <strong>18 months to 6 years</strong>.
               </p>
 
-              <div className="flex flex-wrap items-center gap-3.5 pt-2">
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
                 <a
-                  href="#admissions"
-                  className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold text-sm shadow-sm transition-all"
+                  href="#visit"
+                  className="inline-flex items-center gap-2 px-7 py-4 rounded-2xl bg-[#FFB703] hover:bg-[#FFA500] text-[#144D63] font-extrabold text-base border-2 border-[#144D63] shadow-[0_5px_0_#144D63] active:translate-y-0.5 transition-all"
                 >
-                  <span>Quick Admission Inquiry</span>
-                  <ChevronRight className="w-4 h-4" />
+                  <span>Book a School Tour</span>
+                  <ChevronRight className="w-5 h-5" />
                 </a>
-                <Link
-                  href="/portal"
-                  className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white hover:bg-stone-50 text-aberdeen-900 border border-stone-300 font-semibold text-sm shadow-sm transition-all"
+                <a
+                  href="#classes"
+                  className="inline-flex items-center gap-2 px-6 py-4 rounded-2xl bg-white hover:bg-[#FFF9E6] text-[#144D63] border-2 border-[#8AD1F0] font-extrabold text-base shadow-sm transition-all"
                 >
-                  <BookOpen className="w-4 h-4 text-aberdeen-700" />
-                  <span>Explore Interactive School Portal</span>
-                </Link>
+                  <Sparkles className="w-5 h-5 text-[#FFB703]" />
+                  <span>See Our 3 Classes</span>
+                </a>
               </div>
 
-              {/* Trust Highlights */}
-              <div className="grid grid-cols-3 gap-4 pt-6 border-t border-stone-200/80">
-                <div>
-                  <p className="font-display text-2xl sm:text-3xl font-bold text-aberdeen-900">
-                    3 Steps
+              {/* Cute Mini Badges */}
+              <div className="grid grid-cols-3 gap-3 pt-4 max-w-lg mx-auto lg:mx-0">
+                <div className="p-3 rounded-2xl bg-white/90 border-2 border-[#BCE5F9] text-center">
+                  <p
+                    style={{ fontFamily: "var(--font-display)" }}
+                    className="text-xl sm:text-2xl font-bold text-[#144D63]"
+                  >
+                    18m – 6y
                   </p>
-                  <p className="text-xs sm:text-sm text-stone-600">
-                    Daycare, Nursery &amp; Pre-Unit
-                  </p>
-                </div>
-                <div>
-                  <p className="font-display text-2xl sm:text-3xl font-bold text-aberdeen-900">
-                    100%
-                  </p>
-                  <p className="text-xs sm:text-sm text-stone-600">
-                    Daily Digital Diary Sign-Off
+                  <p className="text-[11px] font-bold text-[#3888A8]">
+                    Step 1, 2 &amp; 3
                   </p>
                 </div>
-                <div>
-                  <p className="font-display text-2xl sm:text-3xl font-bold text-aberdeen-900">
-                    +255 SMS
+                <div className="p-3 rounded-2xl bg-[#FFF9E6] border-2 border-[#FFE082] text-center">
+                  <p
+                    style={{ fontFamily: "var(--font-display)" }}
+                    className="text-xl sm:text-2xl font-bold text-[#D98A00]"
+                  >
+                    100% Safe
                   </p>
-                  <p className="text-xs sm:text-sm text-stone-600">
-                    Direct Beem Africa Alerts
+                  <p className="text-[11px] font-bold text-[#8C6200]">
+                    Caring Courtyard
+                  </p>
+                </div>
+                <div className="p-3 rounded-2xl bg-white/90 border-2 border-[#BCE5F9] text-center">
+                  <p
+                    style={{ fontFamily: "var(--font-display)" }}
+                    className="text-xl sm:text-2xl font-bold text-[#144D63]"
+                  >
+                    Daily App
+                  </p>
+                  <p className="text-[11px] font-bold text-[#3888A8]">
+                    Parent Diary Updates
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Right Interactive Preview Card */}
-            <div className="lg:col-span-5">
-              <div className="bg-white rounded-3xl border border-stone-200/90 shadow-xl p-6 sm:p-7 space-y-5 relative">
-                <div className="flex items-center justify-between border-b border-stone-100 pb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-aberdeen-100 text-aberdeen-800 flex items-center justify-center font-bold">
-                      AD
+            {/* Right Playful Photo Collage Frame (With Placeholders for School & Kids) */}
+            <div className="lg:col-span-6">
+              <div className="relative mx-auto max-w-lg">
+                {/* Decorative Yellow Brush Blob Behind Photo */}
+                <div className="absolute -inset-3 rounded-[2.5rem] bg-[#FFB703] rotate-2 border-2 border-[#144D63] shadow-[0_8px_0_#144D63]" />
+
+                {/* Main Hero Photo Card */}
+                <div className="relative rounded-[2.2rem] bg-white border-4 border-[#144D63] p-3 sm:p-4 space-y-3">
+                  <div className="relative h-64 sm:h-80 w-full rounded-[1.6rem] overflow-hidden bg-[#D8F1FF]">
+                    <img
+                      src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=1000&q=80"
+                      alt="Happy Aberdeen Nursery Children"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute top-3 left-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/95 border border-[#144D63] text-[11px] font-extrabold text-[#144D63] shadow-xs">
+                      <Camera className="w-3.5 h-3.5 text-[#FFB703]" />
+                      <span>Photo Placeholder: Happy Aberdeen Kids</span>
                     </div>
-                    <div>
-                      <span className="text-xs uppercase tracking-wider font-semibold text-aberdeen-700">
-                        Live Parent &amp; Teacher Portal
+                  </div>
+
+                  {/* Two Smaller Playful Environment Placeholders Below */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="relative h-32 rounded-2xl overflow-hidden border-2 border-[#9AD9F5] bg-[#E8F7FF]">
+                      <img
+                        src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?auto=format&fit=crop&w=600&q=80"
+                        alt="Classroom Sensory Play"
+                        className="w-full h-full object-cover"
+                      />
+                      <span className="absolute bottom-2 left-2 right-2 px-2 py-1 rounded-lg bg-white/90 text-[10px] font-extrabold text-[#144D63] truncate">
+                        📸 Montessori Play Corner
                       </span>
-                      <h3 className="font-bold text-stone-900 text-sm">
-                        Daily Digital Diary &amp; Sign-Off
-                      </h3>
+                    </div>
+                    <div className="relative h-32 rounded-2xl overflow-hidden border-2 border-[#FFE082] bg-[#FFF9E6]">
+                      <img
+                        src="https://images.unsplash.com/photo-1566454544259-f4b94c3d758c?auto=format&fit=crop&w=600&q=80"
+                        alt="Outdoor School Playground"
+                        className="w-full h-full object-cover"
+                      />
+                      <span className="absolute bottom-2 left-2 right-2 px-2 py-1 rounded-lg bg-white/90 text-[10px] font-extrabold text-[#144D63] truncate">
+                        📸 Shaded Play Garden
+                      </span>
                     </div>
                   </div>
-                  <span className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-semibold">
-                    Step 1 • Today
-                  </span>
-                </div>
-
-                <div className="rounded-2xl bg-[#faf8f4] p-4 border border-stone-200/70 space-y-3">
-                  <div className="flex items-center justify-between text-xs text-stone-500">
-                    <span>Pupil: <strong className="text-stone-800">Liam Josephat Mushi</strong></span>
-                    <span>Teacher: <strong className="text-stone-800">Mwl. Grace Komba</strong></span>
-                  </div>
-                  <p className="text-xs sm:text-sm text-stone-700 leading-relaxed">
-                    <strong className="text-aberdeen-900">Activities Learned:</strong>{" "}
-                    Sensory wooden block sorting by color, Swahili greeting song
-                    (&ldquo;Habari za Asubuhi&rdquo;), and courtyard balance play.
-                  </p>
-                  <p className="text-xs sm:text-sm text-stone-700 leading-relaxed">
-                    <strong className="text-amber-800">Homework:</strong> Practice
-                    naming 3 yellow objects around the house together before bedtime.
-                  </p>
-                  <div className="pt-2 flex items-center justify-between border-t border-stone-200/70">
-                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700">
-                      <CheckCircle2 className="w-4 h-4" /> Acknowledged by Bw. Josephat Mushi
-                    </span>
-                    <span className="text-[11px] text-stone-500">14:20 EAT</span>
-                  </div>
-                </div>
-
-                {/* Role-Based Quick Launch */}
-                <div className="space-y-2.5 pt-1">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-stone-500">
-                    Instant Portal Demo Access (All 4 Roles)
-                  </p>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Link
-                      href="/portal"
-                      className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-aberdeen-50 hover:bg-aberdeen-100 border border-aberdeen-200 text-xs font-semibold text-aberdeen-900 transition-colors"
-                    >
-                      <span>Owner / Admin</span>
-                      <ChevronRight className="w-3.5 h-3.5" />
-                    </Link>
-                    <Link
-                      href="/portal"
-                      className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-xs font-semibold text-amber-900 transition-colors"
-                    >
-                      <span>Secretary</span>
-                      <ChevronRight className="w-3.5 h-3.5" />
-                    </Link>
-                    <Link
-                      href="/portal"
-                      className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-xs font-semibold text-emerald-900 transition-colors"
-                    >
-                      <span>Step Teacher</span>
-                      <ChevronRight className="w-3.5 h-3.5" />
-                    </Link>
-                    <Link
-                      href="/portal"
-                      className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-sky-50 hover:bg-sky-100 border border-sky-200 text-xs font-semibold text-sky-900 transition-colors"
-                    >
-                      <span>Parent Mobile View</span>
-                      <ChevronRight className="w-3.5 h-3.5" />
-                    </Link>
-                  </div>
                 </div>
               </div>
             </div>
@@ -373,285 +419,243 @@ export default function PublicShowcasePage() {
         </div>
       </section>
 
-      {/* School Mission & Core Values */}
-      <section id="mission" className="py-16 sm:py-20 bg-white border-b border-stone-200/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="max-w-3xl">
-            <span className="text-xs font-bold uppercase tracking-widest text-aberdeen-700">
-              Our Mission &amp; Philosophy
+      {/* Why Kids Love Aberdeen - 4 Fun Playful Pills */}
+      <section className="py-12 bg-white border-y-2 border-[#D4EEFC]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="p-5 rounded-3xl bg-[#FFF9E6] border-2 border-[#FFE082] flex flex-col items-center text-center space-y-2">
+              <div className="w-12 h-12 rounded-2xl bg-[#FFB703] text-[#144D63] flex items-center justify-center shadow-xs">
+                <Palette className="w-6 h-6" />
+              </div>
+              <h3
+                style={{ fontFamily: "var(--font-display)" }}
+                className="font-bold text-lg text-[#144D63]"
+              >
+                Play &amp; Create
+              </h3>
+              <p className="text-xs sm:text-sm text-[#497B90] font-medium">
+                Painting, blocks, music, and outdoor garden discovery every day.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-3xl bg-[#E8F7FF] border-2 border-[#9AD9F5] flex flex-col items-center text-center space-y-2">
+              <div className="w-12 h-12 rounded-2xl bg-[#38A3D0] text-white flex items-center justify-center shadow-xs">
+                <BookOpen className="w-6 h-6" />
+              </div>
+              <h3
+                style={{ fontFamily: "var(--font-display)" }}
+                className="font-bold text-lg text-[#144D63]"
+              >
+                Jolly Phonics
+              </h3>
+              <p className="text-xs sm:text-sm text-[#497B90] font-medium">
+                Fun storytelling, early reading, and counting through games.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-3xl bg-[#EDFAF2] border-2 border-[#A3E4BC] flex flex-col items-center text-center space-y-2">
+              <div className="w-12 h-12 rounded-2xl bg-[#2FB36D] text-white flex items-center justify-center shadow-xs">
+                <Heart className="w-6 h-6" />
+              </div>
+              <h3
+                style={{ fontFamily: "var(--font-display)" }}
+                className="font-bold text-lg text-[#144D63]"
+              >
+                Warm &amp; Safe
+              </h3>
+              <p className="text-xs sm:text-sm text-[#497B90] font-medium">
+                Gated compound, freshly cooked yummy meals, and loving teachers.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-3xl bg-[#FFF3E0] border-2 border-[#FFCC80] flex flex-col items-center text-center space-y-2">
+              <div className="w-12 h-12 rounded-2xl bg-[#FF9800] text-white flex items-center justify-center shadow-xs">
+                <Smile className="w-6 h-6" />
+              </div>
+              <h3
+                style={{ fontFamily: "var(--font-display)" }}
+                className="font-bold text-lg text-[#144D63]"
+              >
+                Parent Portal
+              </h3>
+              <p className="text-xs sm:text-sm text-[#497B90] font-medium">
+                Enrolled parents log in to view daily diaries &amp; SMS updates!
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Our 3 Fun Class Stages (With Photo Placeholders) */}
+      <section id="classes" className="py-16 sm:py-20 bg-[#F4FBFF]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+          <div className="text-center max-w-2xl mx-auto space-y-3">
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#FFE58F] text-[#144D63] text-xs font-extrabold uppercase tracking-wider">
+              <Baby className="w-4 h-4" /> Growing Step by Step
             </span>
-            <h2 className="mt-2 font-display text-3xl sm:text-4xl font-bold text-stone-900">
-              A Foundation of Curiosity, Character &amp; Community
+            <h2
+              style={{ fontFamily: "var(--font-display)" }}
+              className="text-3xl sm:text-4xl font-bold text-[#144D63]"
+            >
+              Our 3 Joyful Class Stages
             </h2>
-            <p className="mt-3 text-stone-600 leading-relaxed">
-              Every child at Aberdeen is known by name, celebrated for their
-              unique pace, and guided closely through partnership between
-              parents and teachers.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="p-6 rounded-2xl bg-[#faf8f4] border border-stone-200/80 space-y-3">
-              <div className="w-11 h-11 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center">
-                <Heart className="w-5 h-5" />
-              </div>
-              <h3 className="font-bold text-stone-900 text-lg">
-                Warm Care &amp; Safety
-              </h3>
-              <p className="text-sm text-stone-600 leading-relaxed">
-                Secure gated courtyard, small class ratios, nutritious freshly
-                prepared meals, and attentive hygiene routines.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-[#faf8f4] border border-stone-200/80 space-y-3">
-              <div className="w-11 h-11 rounded-xl bg-aberdeen-100 text-aberdeen-800 flex items-center justify-center">
-                <Compass className="w-5 h-5" />
-              </div>
-              <h3 className="font-bold text-stone-900 text-lg">
-                Montessori &amp; Phonics
-              </h3>
-              <p className="text-sm text-stone-600 leading-relaxed">
-                Hands-on tactile learning combined with structured Jolly Phonics
-                and early numeracy for confident primary readiness.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-[#faf8f4] border border-stone-200/80 space-y-3">
-              <div className="w-11 h-11 rounded-xl bg-sky-100 text-sky-800 flex items-center justify-center">
-                <MessageSquare className="w-5 h-5" />
-              </div>
-              <h3 className="font-bold text-stone-900 text-lg">
-                Daily Digital Diary
-              </h3>
-              <p className="text-sm text-stone-600 leading-relaxed">
-                Parents receive structured daily updates on lessons and
-                homework, with one-tap digital sign-off and direct teacher notes.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-[#faf8f4] border border-stone-200/80 space-y-3">
-              <div className="w-11 h-11 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center">
-                <ShieldCheck className="w-5 h-5" />
-              </div>
-              <h3 className="font-bold text-stone-900 text-lg">
-                Step-Protected Forums
-              </h3>
-              <p className="text-sm text-stone-600 leading-relaxed">
-                Dedicated classroom discussion boards for Step 1, Step 2, and
-                Step 3 plus official Beem Africa SMS alerts to +255 numbers.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Class Breakdown: The 3 Developmental Stages */}
-      <section id="classes" className="py-16 sm:py-24 bg-[#faf8f4] border-b border-stone-200/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div>
-              <span className="text-xs font-bold uppercase tracking-widest text-aberdeen-700">
-                Developmental Pathway
-              </span>
-              <h2 className="mt-2 font-display text-3xl sm:text-4xl font-bold text-stone-900">
-                Our 3 Developmental Class Stages
-              </h2>
-            </div>
-            <p className="text-sm sm:text-base text-stone-600 max-w-xl">
-              Each child is placed in their age-appropriate Step class with a
-              dedicated lead teacher, tailored curriculum, and Step-specific
-              parent-teacher forum.
+            <p className="text-sm sm:text-base text-[#38758E] font-medium">
+              Every child learns with friends their own age in a bright,
+              caring classroom!
             </p>
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8">
-            {(["step_1", "step_2", "step_3"] as StepClassKey[]).map(
-              (stepKey, idx) => {
-                const meta = STEP_META[stepKey];
-                return (
-                  <div
-                    key={stepKey}
-                    className="bg-white rounded-3xl border border-stone-200/90 p-7 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
-                  >
-                    <div className="space-y-5">
-                      <div className="flex items-center justify-between">
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-bold border ${meta.badgeColor}`}
-                        >
-                          {meta.shortLabel}
-                        </span>
-                        <span className="text-xs font-semibold text-stone-500">
-                          Stage 0{idx + 1}
-                        </span>
-                      </div>
-
-                      <div>
-                        <h3 className="font-display text-2xl font-bold text-stone-900">
-                          {meta.title}
-                        </h3>
-                        <div className="mt-2 flex flex-wrap items-center gap-3 text-xs font-medium text-stone-600">
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-stone-100">
-                            <Clock className="w-3.5 h-3.5 text-aberdeen-700" />
-                            {meta.ageRange}
-                          </span>
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-stone-100">
-                            <Users className="w-3.5 h-3.5 text-aberdeen-700" />
-                            {meta.ratio}
-                          </span>
-                        </div>
-                      </div>
-
-                      <p className="text-sm text-stone-600 leading-relaxed">
-                        {meta.summary}
-                      </p>
-
-                      <div className="space-y-2.5 pt-2 border-t border-stone-100">
-                        <p className="text-xs font-bold uppercase tracking-wider text-stone-500">
-                          Key Learning Milestones
-                        </p>
-                        <ul className="space-y-2">
-                          {meta.pillars.map((pillar) => (
-                            <li
-                              key={pillar}
-                              className="flex items-start gap-2 text-sm text-stone-700"
-                            >
-                              <CheckCircle2 className="w-4 h-4 text-aberdeen-600 shrink-0 mt-0.5" />
-                              <span>{pillar}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-
-                    <div className="mt-7 pt-4 border-t border-stone-100 flex items-center justify-between">
-                      <a
-                        href="#admissions"
-                        onClick={() =>
-                          setInquiryForm((f) => ({ ...f, step: stepKey }))
-                        }
-                        className="text-xs font-bold text-aberdeen-800 hover:text-aberdeen-600 inline-flex items-center gap-1"
-                      >
-                        <span>Inquire for {meta.shortLabel}</span>
-                        <ChevronRight className="w-4 h-4" />
-                      </a>
-                      <GraduationCap className="w-5 h-5 text-stone-300" />
-                    </div>
+            {PLAYFUL_STEPS.map((cls) => (
+              <div
+                key={cls.key}
+                className={`rounded-[2rem] border-3 ${cls.cardBg} p-5 sm:p-6 shadow-[0_6px_0_rgba(20,77,99,0.12)] hover:-translate-y-1 transition-all flex flex-col justify-between space-y-5`}
+              >
+                <div className="space-y-4">
+                  {/* Class Photo Placeholder */}
+                  <div className="relative h-48 w-full rounded-2xl overflow-hidden border-2 border-white shadow-xs bg-white">
+                    <img
+                      src={cls.photoUrl}
+                      alt={cls.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <span
+                      className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-extrabold shadow-xs ${cls.badgeBg}`}
+                    >
+                      {cls.badge}
+                    </span>
+                    <span className="absolute bottom-2 left-2 right-2 px-2.5 py-1 rounded-lg bg-white/90 text-[10px] font-bold text-[#144D63] truncate">
+                      📷 {cls.photoPlaceholderLabel}
+                    </span>
                   </div>
-                );
-              }
-            )}
+
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <h3
+                        style={{ fontFamily: "var(--font-display)" }}
+                        className="text-2xl font-bold text-[#144D63]"
+                      >
+                        {cls.title}
+                      </h3>
+                      <span
+                        className={`text-xs font-extrabold px-2.5 py-1 rounded-xl bg-white border border-current ${cls.accentColor}`}
+                      >
+                        {cls.age}
+                      </span>
+                    </div>
+                    <p className="mt-2 text-sm text-[#28667E] font-medium leading-relaxed">
+                      {cls.tagline}
+                    </p>
+                  </div>
+
+                  <ul className="space-y-2 pt-2">
+                    {cls.highlights.map((item) => (
+                      <li
+                        key={item}
+                        className="flex items-center gap-2 text-xs sm:text-sm font-bold text-[#144D63] bg-white/80 px-3 py-2 rounded-xl"
+                      >
+                        <Star className="w-4 h-4 text-[#FFB703] fill-[#FFB703] shrink-0" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <a
+                  href="#visit"
+                  onClick={() =>
+                    setInquiryForm((f) => ({ ...f, step: cls.key }))
+                  }
+                  className="w-full py-3 rounded-xl bg-white hover:bg-[#FFB703] text-[#144D63] font-extrabold text-xs sm:text-sm border-2 border-[#144D63] flex items-center justify-center gap-1.5 shadow-[0_3px_0_#144D63] transition-colors"
+                >
+                  <span>Enroll in {cls.badge}</span>
+                  <ChevronRight className="w-4 h-4" />
+                </a>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* About Us & Showcase Staff */}
-      <section id="staff" className="py-16 sm:py-24 bg-white border-b border-stone-200/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="max-w-3xl">
-            <span className="text-xs font-bold uppercase tracking-widest text-aberdeen-700">
-              Qualified Educators &amp; Leadership
+      {/* Light & Cheerful Screenshot-Inspired Inspiration Banner */}
+      <section className="py-12 px-4 sm:px-6 lg:px-8 bg-[#BCE4FA]/60 border-y-2 border-[#9AD9F5]">
+        <div className="max-w-5xl mx-auto rounded-[2.2rem] bg-[#E3F4FD] border-3 border-[#4BA3C7] p-6 sm:p-10 relative overflow-hidden shadow-sm">
+          {/* Sunny Yellow Brush Accent from Screenshot */}
+          <div className="hidden sm:block absolute -right-10 -bottom-10 w-52 h-52 rounded-full bg-[#FFB703]/40 pointer-events-none" />
+
+          <div className="relative grid md:grid-cols-12 gap-6 items-center">
+            <div className="md:col-span-8 space-y-2">
+              <span className="inline-block px-3 py-1 rounded-full bg-[#FFB703] text-[#144D63] text-xs font-extrabold uppercase tracking-wider">
+                #NurturingYoungMinds
+              </span>
+              <p
+                style={{ fontFamily: "var(--font-display)" }}
+                className="text-xl sm:text-2xl font-bold text-[#144D63] leading-snug"
+              >
+                &ldquo;Every child deserves a joyful, curiosity-filled start
+                where kindness, play, and discovery go hand in hand.&rdquo;
+              </p>
+              <p className="text-xs font-extrabold text-[#2B7A9B] uppercase tracking-wider">
+                — The Aberdeen Daycare &amp; Nursery Family
+              </p>
+            </div>
+            <div className="md:col-span-4 flex justify-center md:justify-end">
+              <a
+                href="#visit"
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-[#2B7A9B] hover:bg-[#1F627E] text-white font-extrabold text-sm border-2 border-[#144D63] shadow-[0_4px_0_#144D63] transition-all"
+              >
+                <span>Come Visit Us!</span>
+                <ChevronRight className="w-4 h-4" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* School Environment & Happy Kids Photo Placeholders */}
+      <section id="gallery" className="py-16 sm:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+          <div className="text-center max-w-2xl mx-auto space-y-3">
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#E8F7FF] border border-[#9AD9F5] text-[#1F6E8C] text-xs font-extrabold uppercase tracking-wider">
+              <Camera className="w-4 h-4 text-[#FFB703]" /> Peek Inside Aberdeen
             </span>
-            <h2 className="mt-2 font-display text-3xl sm:text-4xl font-bold text-stone-900">
-              Meet the Heart of Aberdeen
+            <h2
+              style={{ fontFamily: "var(--font-display)" }}
+              className="text-3xl sm:text-4xl font-bold text-[#144D63]"
+            >
+              Our Happy School Environment
             </h2>
-            <p className="mt-3 text-stone-600 leading-relaxed">
-              Our teachers and leadership team are certified early childhood
-              specialists dedicated to nurturing every pupil&apos;s intellectual
-              and emotional growth.
+            <p className="text-sm sm:text-base text-[#38758E] font-medium">
+              Colorful classrooms, safe play areas, and spaces designed just for
+              little hands and feet.
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {STAFF_SHOWCASE.map((staff) => (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {CAMPUS_GALLERY.map((item) => (
               <div
-                key={staff.name}
-                className="rounded-2xl bg-[#faf8f4] border border-stone-200/80 p-6 flex flex-col justify-between space-y-4"
+                key={item.title}
+                className={`rounded-3xl border-3 ${item.frameColor} ${item.rotation} hover:rotate-0 transition-transform p-3.5 space-y-3 shadow-sm`}
               >
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div
-                      className={`w-12 h-12 rounded-2xl flex items-center justify-center font-display font-bold text-base ${staff.color}`}
-                    >
-                      {staff.initials}
-                    </div>
-                    <span className="px-3 py-1 rounded-full bg-white border border-stone-200 text-xs font-semibold text-stone-700">
-                      {staff.badge}
-                    </span>
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg text-stone-900">
-                      {staff.name}
-                    </h3>
-                    <p className="text-xs font-semibold text-aberdeen-700 mt-0.5">
-                      {staff.role}
-                    </p>
-                  </div>
-                  <p className="text-sm text-stone-600 leading-relaxed">
-                    {staff.bio}
-                  </p>
-                </div>
-
-                <div className="pt-3 border-t border-stone-200/70 flex items-center gap-2 text-xs text-stone-500">
-                  <Award className="w-4 h-4 text-amber-600 shrink-0" />
-                  <span>{staff.credentials}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* General Events & School News Calendar */}
-      <section id="events" className="py-16 sm:py-24 bg-[#faf8f4] border-b border-stone-200/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div>
-              <span className="text-xs font-bold uppercase tracking-widest text-aberdeen-700">
-                School Calendar &amp; News
-              </span>
-              <h2 className="mt-2 font-display text-3xl sm:text-4xl font-bold text-stone-900">
-                Upcoming Events &amp; Term Highlights
-              </h2>
-            </div>
-            <Link
-              href="/portal"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-aberdeen-800 hover:text-aberdeen-600"
-            >
-              <Calendar className="w-4 h-4" />
-              <span>View Full Forum Announcements in Portal</span>
-              <ChevronRight className="w-4 h-4" />
-            </Link>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            {UPCOMING_EVENTS.map((evt) => (
-              <div
-                key={evt.title}
-                className="bg-white rounded-2xl border border-stone-200/90 p-6 flex gap-5 items-start shadow-sm"
-              >
-                <div className="w-16 h-16 rounded-2xl bg-aberdeen-900 text-amber-300 flex flex-col items-center justify-center shrink-0 font-display">
-                  <span className="text-[11px] uppercase tracking-wider font-sans font-bold text-amber-200">
-                    {evt.date.split(" ")[0]}
-                  </span>
-                  <span className="text-xl font-bold leading-none mt-0.5">
-                    {evt.date.split(" ")[1]}
+                <div className="relative h-52 rounded-2xl overflow-hidden bg-white border border-white">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <span className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full bg-white/95 text-[#144D63] text-[10px] font-extrabold shadow-xs">
+                    {item.tag}
                   </span>
                 </div>
-                <div className="space-y-1.5">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[11px] font-bold">
-                      {evt.category}
-                    </span>
-                    <span className="text-xs text-stone-500 font-medium">
-                      {evt.day}
-                    </span>
-                  </div>
-                  <h3 className="font-bold text-stone-900 text-base">
-                    {evt.title}
+                <div className="px-1">
+                  <h3
+                    style={{ fontFamily: "var(--font-display)" }}
+                    className="font-bold text-base text-[#144D63]"
+                  >
+                    {item.title}
                   </h3>
-                  <p className="text-sm text-stone-600 leading-relaxed">
-                    {evt.description}
+                  <p className="text-[11px] font-bold text-[#3888A8] mt-0.5">
+                    📷 {item.placeholderNote}
                   </p>
                 </div>
               </div>
@@ -660,92 +664,171 @@ export default function PublicShowcasePage() {
         </div>
       </section>
 
-      {/* Quick Admission Inquiry CTA Section */}
-      <section id="admissions" className="py-16 sm:py-24 bg-aberdeen-950 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-12 gap-12 items-center">
-            <div className="lg:col-span-6 space-y-6">
-              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-semibold uppercase tracking-wider">
-                Join the Aberdeen Family
+      {/* Meet Our Caring Teachers (Friendly & Short) */}
+      <section
+        id="teachers"
+        className="py-16 sm:py-20 bg-[#F4FBFF] border-t-2 border-[#D4EEFC]"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+          <div className="text-center max-w-2xl mx-auto space-y-3">
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#FFE58F] text-[#144D63] text-xs font-extrabold uppercase tracking-wider">
+              <Users className="w-4 h-4" /> Caring Hearts
+            </span>
+            <h2
+              style={{ fontFamily: "var(--font-display)" }}
+              className="text-3xl sm:text-4xl font-bold text-[#144D63]"
+            >
+              Meet Our Friendly Teachers
+            </h2>
+            <p className="text-sm sm:text-base text-[#38758E] font-medium">
+              Warm, certified educators who know every child by name and smile.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {FRIENDLY_TEAM.map((member) => (
+              <div
+                key={member.name}
+                className={`rounded-3xl border-2 ${member.bg} p-5 text-center space-y-3 shadow-xs hover:-translate-y-1 transition-transform`}
+              >
+                <div className="relative w-28 h-28 mx-auto rounded-full overflow-hidden border-4 border-white shadow-md bg-white">
+                  <img
+                    src={member.photo}
+                    alt={member.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <span className="inline-block px-3 py-0.5 rounded-full bg-white text-[#1F6E8C] text-[11px] font-extrabold border border-[#BCE5F9]">
+                  {member.badge}
+                </span>
+                <div>
+                  <h3
+                    style={{ fontFamily: "var(--font-display)" }}
+                    className="font-bold text-lg text-[#144D63]"
+                  >
+                    {member.name}
+                  </h3>
+                  <p className="text-xs font-extrabold text-[#2B7A9B]">
+                    {member.role}
+                  </p>
+                </div>
+                <p className="text-xs text-[#38758E] font-medium">
+                  {member.loveNote}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Joyful Book a Tour / Admission Inquiry Section */}
+      <section
+        id="visit"
+        className="py-16 sm:py-20 bg-gradient-to-b from-[#D8F1FF] to-[#BCE4FA] border-t-2 border-[#9AD9F5]"
+      >
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-12 gap-10 items-center">
+            <div className="lg:col-span-6 space-y-5">
+              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FFB703] text-[#144D63] text-xs font-extrabold uppercase tracking-wider shadow-xs">
+                <Calendar className="w-4 h-4" /> Come Say Karibu!
               </span>
-              <h2 className="font-display text-3xl sm:text-4xl font-bold text-white leading-tight">
-                Schedule a Campus Visit or Request Admission Details
+              <h2
+                style={{ fontFamily: "var(--font-display)" }}
+                className="text-3xl sm:text-4xl font-bold text-[#144D63] leading-tight"
+              >
+                Book a Fun Morning Tour With Your Child!
               </h2>
-              <p className="text-stone-300 text-sm sm:text-base leading-relaxed">
-                Once enrolled, our Secretary or School Owner provisions your
-                official <strong>+255 Parent Portal Account</strong>—giving you
-                instant mobile access to your child&apos;s Daily Digital Diary,
-                Step Forum, and fee statements.
+              <p className="text-sm sm:text-base text-[#1F5A73] font-medium leading-relaxed">
+                Come see our colorful classrooms, meet our teachers, and let
+                your child play in our courtyard! Once enrolled, our Secretary
+                activates your private <strong>+255 Parent Login</strong>.
               </p>
 
-              <div className="space-y-3 pt-2 text-sm text-stone-200">
-                <div className="flex items-center gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-amber-400 shrink-0" />
-                  <span>
-                    <strong>Step 1 (Daycare):</strong> 18 Months – 3 Years
-                  </span>
+              <div className="grid sm:grid-cols-2 gap-3 pt-2">
+                <div className="p-4 rounded-2xl bg-white/90 border-2 border-white flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#FFB703] text-[#144D63] flex items-center justify-center font-bold">
+                    <Phone className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-bold text-[#3888A8] uppercase">
+                      Call Admissions
+                    </p>
+                    <p className="font-extrabold text-sm text-[#144D63]">
+                      +255 754 100 100
+                    </p>
+                  </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-amber-400 shrink-0" />
-                  <span>
-                    <strong>Step 2 (Nursery):</strong> 3 – 4.5 Years
-                  </span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-amber-400 shrink-0" />
-                  <span>
-                    <strong>Step 3 (Pre-Unit):</strong> 4.5 – 6 Years
-                  </span>
+                <div className="p-4 rounded-2xl bg-white/90 border-2 border-white flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#38A3D0] text-white flex items-center justify-center font-bold">
+                    <Lock className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-bold text-[#3888A8] uppercase">
+                      Already Enrolled?
+                    </p>
+                    <Link
+                      href="/login"
+                      className="font-extrabold text-sm text-[#1F6E8C] underline"
+                    >
+                      Open Portal Login →
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
 
+            {/* Simple, Friendly Inquiry Card */}
             <div className="lg:col-span-6">
-              <div className="bg-white text-stone-900 rounded-3xl p-6 sm:p-8 shadow-xl">
+              <div className="bg-white rounded-[2.2rem] border-3 border-[#144D63] p-6 sm:p-8 shadow-[0_8px_0_#144D63]">
                 {inquirySubmitted ? (
                   <div className="py-8 text-center space-y-4">
-                    <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto">
-                      <CheckCircle2 className="w-8 h-8" />
+                    <div className="w-16 h-16 rounded-full bg-[#FFF9E6] border-2 border-[#FFB703] text-[#D98A00] flex items-center justify-center mx-auto">
+                      <CheckCircle2 className="w-9 h-9" />
                     </div>
-                    <h3 className="font-display text-2xl font-bold text-stone-900">
+                    <h3
+                      style={{ fontFamily: "var(--font-display)" }}
+                      className="text-2xl font-bold text-[#144D63]"
+                    >
                       Asante Sana, {inquiryForm.parentName}!
                     </h3>
-                    <p className="text-sm text-stone-600 max-w-md mx-auto">
-                      We have received your admission inquiry for{" "}
-                      <strong>{inquiryForm.childName}</strong> (
-                      {STEP_META[inquiryForm.step].shortLabel}). Our Secretary,{" "}
-                      <strong>Bi. Salma Kikwete</strong>, will contact you on{" "}
+                    <p className="text-sm text-[#38758E] font-medium max-w-md mx-auto">
+                      We can&apos;t wait to meet{" "}
+                      <strong>{inquiryForm.childName}</strong>! Our Admissions
+                      Secretary will call or SMS you on{" "}
                       <strong>{inquiryForm.phone}</strong> shortly.
                     </p>
                     <button
                       type="button"
                       onClick={() => setInquirySubmitted(false)}
-                      className="px-5 py-2.5 rounded-xl bg-aberdeen-800 text-white text-xs font-semibold"
+                      className="px-6 py-2.5 rounded-xl bg-[#FFB703] text-[#144D63] font-extrabold text-xs border-2 border-[#144D63]"
                     >
-                      Submit Another Inquiry
+                      Send Another Inquiry
                     </button>
                   </div>
                 ) : (
                   <form onSubmit={handleInquirySubmit} className="space-y-4">
                     <div>
-                      <h3 className="font-display text-xl font-bold text-stone-900">
-                        Quick Admission Inquiry
+                      <h3
+                        style={{ fontFamily: "var(--font-display)" }}
+                        className="text-2xl font-bold text-[#144D63]"
+                      >
+                        Quick Admission &amp; Visit Form
                       </h3>
-                      <p className="text-xs text-stone-500 mt-0.5">
-                        Complete the form below and our Admissions Desk will
-                        reach out via phone/SMS.
+                      <p className="text-xs font-bold text-[#3888A8] mt-0.5">
+                        Leave your details below and we&apos;ll call you right
+                        back!
                       </p>
                     </div>
 
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-semibold text-stone-700 mb-1">
-                          Parent / Guardian Full Name *
+                        <label className="block text-xs font-extrabold text-[#144D63] mb-1">
+                          Parent / Guardian Name *
                         </label>
                         <input
                           type="text"
                           required
-                          placeholder="e.g. Bw. Josephat Mushi"
+                          placeholder="e.g. Mama Liam"
                           value={inquiryForm.parentName}
                           onChange={(e) =>
                             setInquiryForm({
@@ -753,12 +836,12 @@ export default function PublicShowcasePage() {
                               parentName: e.target.value,
                             })
                           }
-                          className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-aberdeen-600"
+                          className="w-full px-3.5 py-2.5 rounded-xl border-2 border-[#BCE5F9] text-sm font-medium focus:outline-none focus:border-[#2B7A9B]"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-semibold text-stone-700 mb-1">
-                          Tanzania Phone (+255XXXXXXXXX) *
+                        <label className="block text-xs font-extrabold text-[#144D63] mb-1">
+                          Phone Number (+255) *
                         </label>
                         <input
                           type="tel"
@@ -771,26 +854,26 @@ export default function PublicShowcasePage() {
                               phone: e.target.value,
                             })
                           }
-                          className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-aberdeen-600"
+                          className="w-full px-3.5 py-2.5 rounded-xl border-2 border-[#BCE5F9] text-sm font-mono focus:outline-none focus:border-[#2B7A9B]"
                         />
                       </div>
                     </div>
 
                     {phoneError && (
-                      <p className="text-xs text-red-600 font-medium">
+                      <p className="text-xs text-red-600 font-bold">
                         {phoneError}
                       </p>
                     )}
 
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-semibold text-stone-700 mb-1">
-                          Child&apos;s Full Name *
+                        <label className="block text-xs font-extrabold text-[#144D63] mb-1">
+                          Child&apos;s Name *
                         </label>
                         <input
                           type="text"
                           required
-                          placeholder="e.g. Liam Josephat"
+                          placeholder="e.g. Liam"
                           value={inquiryForm.childName}
                           onChange={(e) =>
                             setInquiryForm({
@@ -798,12 +881,12 @@ export default function PublicShowcasePage() {
                               childName: e.target.value,
                             })
                           }
-                          className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-aberdeen-600"
+                          className="w-full px-3.5 py-2.5 rounded-xl border-2 border-[#BCE5F9] text-sm font-medium focus:outline-none focus:border-[#2B7A9B]"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-semibold text-stone-700 mb-1">
-                          Developmental Stage (Class) *
+                        <label className="block text-xs font-extrabold text-[#144D63] mb-1">
+                          Class Stage *
                         </label>
                         <select
                           value={inquiryForm.step}
@@ -813,44 +896,26 @@ export default function PublicShowcasePage() {
                               step: e.target.value as StepClassKey,
                             })
                           }
-                          className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-aberdeen-600"
+                          className="w-full px-3.5 py-2.5 rounded-xl border-2 border-[#BCE5F9] text-sm font-bold bg-white focus:outline-none focus:border-[#2B7A9B]"
                         >
                           <option value="step_1">
-                            Step 1 (Daycare / Early Toddler)
+                            Step 1 • Daycare (18m – 3 yrs)
                           </option>
                           <option value="step_2">
-                            Step 2 (Nursery / Mid Toddler)
+                            Step 2 • Nursery (3 – 4.5 yrs)
                           </option>
                           <option value="step_3">
-                            Step 3 (Pre-Unit / Transition to Primary)
+                            Step 3 • Pre-Unit (4.5 – 6 yrs)
                           </option>
                         </select>
                       </div>
                     </div>
 
-                    <div>
-                      <label className="block text-xs font-semibold text-stone-700 mb-1">
-                        Questions or Preferred Visit Date (Optional)
-                      </label>
-                      <textarea
-                        rows={2}
-                        placeholder="Any dietary notes, preferred tour morning, or questions..."
-                        value={inquiryForm.notes}
-                        onChange={(e) =>
-                          setInquiryForm({
-                            ...inquiryForm,
-                            notes: e.target.value,
-                          })
-                        }
-                        className="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-aberdeen-600"
-                      />
-                    </div>
-
                     <button
                       type="submit"
-                      className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold text-sm shadow-sm transition-colors"
+                      className="w-full py-3.5 rounded-2xl bg-[#FFB703] hover:bg-[#FFA500] text-[#144D63] font-extrabold text-sm border-2 border-[#144D63] shadow-[0_4px_0_#144D63] active:translate-y-0.5 transition-all"
                     >
-                      Send Admission Inquiry
+                      Request School Tour &amp; Fee Info
                     </button>
                   </form>
                 )}
@@ -860,24 +925,30 @@ export default function PublicShowcasePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-stone-950 text-stone-400 py-10 text-xs border-t border-stone-800">
+      {/* Cheerful Footer */}
+      <footer className="bg-[#144D63] text-[#D8F1FF] py-8 text-xs border-t-4 border-[#FFB703]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-aberdeen-800 text-amber-300 flex items-center justify-center font-bold">
-              A
+            <div className="w-9 h-9 rounded-xl bg-[#FFB703] text-[#144D63] flex items-center justify-center font-extrabold">
+              <Sun className="w-5 h-5" />
             </div>
-            <span>
-              © {new Date().getFullYear()} Aberdeen Daycare and Nursery School.
-              Optimized for Supabase Free Tier &amp; Beem Africa (+255).
+            <span className="font-bold">
+              © {new Date().getFullYear()} Aberdeen Daycare &amp; Nursery
+              School. #NurturingYoungMinds
             </span>
           </div>
-          <div className="flex items-center gap-6">
-            <Link href="/login" className="hover:text-white transition-colors">
-              Portal Login
-            </Link>
-            <Link href="/portal" className="hover:text-white transition-colors">
-              Interactive Role Portal
+          <div className="flex items-center gap-6 font-extrabold">
+            <a href="#classes" className="hover:text-[#FFB703] transition-colors">
+              Our Classes
+            </a>
+            <a href="#gallery" className="hover:text-[#FFB703] transition-colors">
+              Photos
+            </a>
+            <Link
+              href="/login"
+              className="px-3.5 py-1.5 rounded-xl bg-[#FFB703] text-[#144D63] hover:bg-[#FFA500] transition-colors"
+            >
+              Staff &amp; Parent Portal Login
             </Link>
           </div>
         </div>

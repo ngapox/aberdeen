@@ -2,10 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+
 :root {
   --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, sans-serif;
-  --font-display: "Fraunces", Georgia, Cambria, "Times New Roman", serif;
+  --font-display: "Fredoka", "Plus Jakarta Sans", cursive, sans-serif;
 }
 
 html {
@@ -13,26 +15,54 @@ html {
 }
 
 body {
-  background-color: #faf8f4;
-  color: #162a22;
+  background-color: #f4fbff;
+  color: #144d63;
   font-family: var(--font-sans);
+  overflow-x: hidden;
 }
 
-/* Custom subtle scrollbars */
+/* Playful animations */
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(2deg);
+  }
+}
+
+@keyframes floatDelayed {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(-2deg);
+  }
+}
+
+.animate-float-slow {
+  animation: floatSlow 5s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: floatDelayed 6s ease-in-out infinite 1.5s;
+}
+
+/* Custom joyful scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1efe9;
+  background: #e6f6ff;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #b8c9c0;
+  background: #7cc6e8;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #65a98c;
+  background: #ffb703;
 }
